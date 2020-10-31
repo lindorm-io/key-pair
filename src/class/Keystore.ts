@@ -9,8 +9,13 @@ export class Keystore {
   private keys: Array<KeyPair>;
 
   constructor(options: IKeystoreOptions) {
-    const filtered = filter(options.keys, (key: KeyPair) => !key.expired);
+    const keys = options.keys || [];
+    const filtered = filter(keys, (key: KeyPair) => !key.expired);
     this.keys = orderBy(filtered, ["created"], ["desc"]);
+  }
+
+  public getLength(): number {
+    return this.keys.length;
   }
 
   public getCurrentKey(): KeyPair {

@@ -42,6 +42,12 @@ describe("Keystore.ts", () => {
     getKeys = () => [key1, key2, key3];
   });
 
+  test("should return zero length", () => {
+    const store = new Keystore({ keys: undefined });
+
+    expect(store.getLength()).toBe(0);
+  });
+
   test("should return the latest created key", () => {
     const store = new Keystore({ keys: getKeys() });
 
