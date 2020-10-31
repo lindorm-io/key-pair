@@ -1,7 +1,7 @@
-import { ExtendableError } from "@lindorm-io/global";
+import { ExtendableError } from "@lindorm-io/core";
 
 export class KeyPairAssertError extends ExtendableError {
   constructor() {
-    super("Invalid Certificate");
+    super("Invalid Key Pair Certificate");
   }
 }

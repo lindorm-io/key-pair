@@ -1,15 +1,10 @@
 # @lindorm-io/key-pair
-This package contains Key Pair functionality for lindorm.io packages.
+ECC and RSA key-pair tools for lindorm.io packages.
 
 ## Installation
 ```shell script
 npm install --save @lindorm-io/key-pair
 ```
-
-### Peer Dependencies
-This package has the following peer dependencies: 
-* [@lindorm-io/common](https://www.npmjs.com/package/@lindorm-io/common)
-* [@lindorm-io/global](https://www.npmjs.com/package/@lindorm-io/global)
 
 ## Usage
 

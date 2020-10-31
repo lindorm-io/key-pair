@@ -1,6 +1,6 @@
 import { Algorithm, KeyType } from "../enum";
 import { generateKeyPair } from "crypto";
-import { getRandomValue } from "@lindorm-io/common";
+import { getRandomValue } from "@lindorm-io/core";
 
 const MODULUS_LENGTH = 4096;
 const KEY_ENCODING = "pkcs1";
