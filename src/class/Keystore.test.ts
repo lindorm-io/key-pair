@@ -1,5 +1,15 @@
+import MockDate from "mockdate";
 import { Keystore } from "./Keystore";
 import { KeyPair } from "../entity";
+
+MockDate.set("2020-01-02 08:00:00.000");
+
+const d1 = new Date("2020-01-01 08:00:00.000");
+const d2 = new Date("2020-01-01 09:00:00.000");
+const d3 = new Date("2020-01-01 10:00:00.000");
+
+const dateBefore = new Date("2020-01-02 02:00:00.000");
+const dateAfter = new Date("2020-01-02 22:00:00.000");
 
 describe("Keystore.ts", () => {
   let key1: KeyPair;
@@ -11,8 +21,8 @@ describe("Keystore.ts", () => {
   beforeEach(() => {
     key1 = new KeyPair({
       id: "mock-id-1",
-      created: new Date("2020-01-01"),
-      expired: null,
+      created: d1,
+      expires: null,
       algorithm: "RS512",
       type: "rsa",
       passphrase: "mock-passphrase-1",
@@ -21,8 +31,8 @@ describe("Keystore.ts", () => {
     });
     key2 = new KeyPair({
       id: "mock-id-2",
-      created: new Date("2020-02-02"),
-      expired: null,
+      created: d2,
+      expires: null,
       algorithm: "ES512",
       type: "ec",
       privateKey: "mock-private-key-2",
@@ -30,8 +40,8 @@ describe("Keystore.ts", () => {
     });
     key3 = new KeyPair({
       id: "mock-id-3",
-      created: new Date("2020-03-03"),
-      expired: null,
+      created: d3,
+      expires: null,
       algorithm: "RS512",
       type: "rsa",
       passphrase: "mock-passphrase-3",
@@ -57,8 +67,17 @@ describe("Keystore.ts", () => {
   test("should return the latest active key", () => {
     key2 = new KeyPair({
       id: "mock-id-2",
-      created: new Date("2020-02-02"),
-      expired: new Date("2020-02-03"),
+      created: d2,
+      expires: dateBefore,
+      algorithm: "ES512",
+      type: "ec",
+      privateKey: "mock-private-key-2",
+      publicKey: "mock-public-key-2",
+    });
+    key2 = new KeyPair({
+      id: "mock-id-2",
+      created: d2,
+      expires: dateAfter,
       algorithm: "ES512",
       type: "ec",
       privateKey: "mock-private-key-2",
@@ -66,8 +85,8 @@ describe("Keystore.ts", () => {
     });
     key3 = new KeyPair({
       id: "mock-id-3",
-      created: new Date("2020-03-03"),
-      expired: new Date("2020-02-03"),
+      created: d3,
+      expires: dateAfter,
       algorithm: "RS512",
       type: "rsa",
       passphrase: "mock-passphrase-3",
@@ -89,8 +108,8 @@ describe("Keystore.ts", () => {
   test("should throw error if no active key can be found", () => {
     key1 = new KeyPair({
       id: "mock-id-1",
-      created: new Date("2020-01-01"),
-      expired: new Date("2020-02-03"),
+      created: d1,
+      expires: dateAfter,
       algorithm: "RS512",
       type: "rsa",
       passphrase: "mock-passphrase-1",
@@ -99,8 +118,8 @@ describe("Keystore.ts", () => {
     });
     key2 = new KeyPair({
       id: "mock-id-2",
-      created: new Date("2020-02-02"),
-      expired: new Date("2020-02-03"),
+      created: d2,
+      expires: dateAfter,
       algorithm: "ES512",
       type: "ec",
       privateKey: "mock-private-key-2",
@@ -108,8 +127,8 @@ describe("Keystore.ts", () => {
     });
     key3 = new KeyPair({
       id: "mock-id-3",
-      created: new Date("2020-03-03"),
-      expired: new Date("2020-02-03"),
+      created: d3,
+      expires: dateAfter,
       algorithm: "RS512",
       type: "rsa",
       passphrase: "mock-passphrase-3",

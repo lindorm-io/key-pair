@@ -3,7 +3,7 @@ import { KeyPairEvent } from "../enum";
 
 export interface IKeyPair extends IEntity {
   algorithm: string;
-  expired: Date;
+  expires: Date;
   passphrase: string;
   privateKey: string;
   publicKey: string;
@@ -12,7 +12,7 @@ export interface IKeyPair extends IEntity {
 
 export interface IKeyPairOptions extends IEntityBaseOptions {
   algorithm: string;
-  expired?: Date;
+  expires?: Date;
   passphrase?: string;
   privateKey?: string;
   publicKey?: string;
@@ -20,26 +20,50 @@ export interface IKeyPairOptions extends IEntityBaseOptions {
 }
 
 export class KeyPair extends EntityBase implements IKeyPair {
-  readonly algorithm: string;
-  readonly passphrase: string;
-  readonly privateKey: string;
-  readonly publicKey: string;
-  readonly type: string;
-  private _expired: Date;
+  private _algorithm: string;
+  private _expires: Date;
+  private _passphrase: string;
+  private _privateKey: string;
+  private _publicKey: string;
+  private _type: string;
 
   constructor(options: IKeyPairOptions) {
     super(options);
 
-    this.algorithm = options.algorithm;
-    this.passphrase = options.passphrase || null;
-    this.privateKey = options.privateKey || null;
-    this.publicKey = options.publicKey || null;
-    this.type = options.type;
-    this._expired = options.expired || null;
+    this._algorithm = options.algorithm;
+    this._expires = options.expires || null;
+    this._passphrase = options.passphrase || null;
+    this._privateKey = options.privateKey || null;
+    this._publicKey = options.publicKey || null;
+    this._type = options.type;
   }
 
-  public get expired(): Date {
-    return this._expired;
+  public get algorithm(): string {
+    return this._algorithm;
+  }
+
+  public get expires(): Date {
+    return this._expires;
+  }
+  public set expires(expires: Date) {
+    this._expires = expires;
+    this.addEvent(KeyPairEvent.EXPIRES_CHANGED, { expires: this._expires });
+  }
+
+  public get passphrase(): string {
+    return this._passphrase;
+  }
+
+  public get privateKey(): string {
+    return this._privateKey;
+  }
+
+  public get publicKey(): string {
+    return this._publicKey;
+  }
+
+  public get type(): string {
+    return this._type;
   }
 
   public create(): void {
@@ -49,17 +73,12 @@ export class KeyPair extends EntityBase implements IKeyPair {
     }
 
     this.addEvent(KeyPairEvent.CREATED, {
-      algorithm: this.algorithm,
-      passphrase: this.passphrase,
-      privateKey: this.privateKey,
-      publicKey: this.publicKey,
-      type: this.type,
-      expired: this._expired,
+      algorithm: this._algorithm,
+      passphrase: this._passphrase,
+      privateKey: this._privateKey,
+      publicKey: this._publicKey,
+      type: this._type,
+      expires: this._expires,
     });
-  }
-
-  public expire(): void {
-    this._expired = new Date();
-    this.addEvent(KeyPairEvent.EXPIRED, { expired: this._expired });
   }
 }

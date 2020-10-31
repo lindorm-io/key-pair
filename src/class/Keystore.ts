@@ -1,5 +1,6 @@
-import { filter, find, orderBy } from "lodash";
 import { KeyPair } from "../entity";
+import { filter, find, orderBy } from "lodash";
+import { isBefore } from "date-fns";
 
 export interface IKeystoreOptions {
   keys: Array<KeyPair>;
@@ -10,8 +11,8 @@ export class Keystore {
 
   constructor(options: IKeystoreOptions) {
     const keys = options.keys || [];
-    const filtered = filter(keys, (key: KeyPair) => !key.expired);
-    this.keys = orderBy(filtered, ["created"], ["desc"]);
+    const filtered = filter(keys, Keystore.isKeyExpired);
+    this.keys = orderBy(filtered, ["created", "expires"], ["desc", "desc"]);
   }
 
   public getLength(): number {
@@ -34,5 +35,9 @@ export class Keystore {
     }
 
     return key;
+  }
+
+  public static isKeyExpired(key: KeyPair): boolean {
+    return key.expires === null ? true : isBefore(key.expires, new Date());
   }
 }
