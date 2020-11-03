@@ -1,6 +1,7 @@
 import { KeyPair } from "../entity";
 import { filter, find, orderBy } from "lodash";
-import { isBefore } from "date-fns";
+import { add, isAfter, isBefore } from "date-fns";
+import { stringToDurationObject } from "@lindorm-io/core";
 
 export interface IKeystoreOptions {
   keys: Array<KeyPair>;
@@ -11,33 +12,57 @@ export class Keystore {
 
   constructor(options: IKeystoreOptions) {
     const keys = options.keys || [];
-    const filtered = filter(keys, Keystore.isKeyExpired);
-    this.keys = orderBy(filtered, ["created", "expires"], ["desc", "desc"]);
+    this.keys = orderBy(keys, ["created", "expires"], ["desc", "asc"]);
   }
 
-  public getLength(): number {
-    return this.keys.length;
+  public getUsableKeys(): Array<KeyPair> {
+    return filter(this.keys, Keystore.isKeyUsable);
+  }
+
+  public getAllKeys(): Array<KeyPair> {
+    return this.keys;
   }
 
   public getCurrentKey(): KeyPair {
-    if (!this.keys.length) {
-      throw new Error("Key could not be found.");
+    const keys = this.getUsableKeys();
+
+    if (!keys.length) {
+      throw new Error("Keys could not be found");
     }
 
-    return this.keys[0];
+    return keys[0];
   }
 
   public getKey(id: string): KeyPair {
-    const key = find(this.keys, { id });
+    const key = find(this.getAllKeys(), { id });
 
     if (!key) {
-      throw new Error(`Key by id [ ${id} ] could not be found.`);
+      throw new Error(`Key by id [ ${id} ] could not be found`);
+    }
+
+    if (Keystore.isKeyExpired(key)) {
+      throw new Error(`Key by id [ ${id} ] is expired`);
     }
 
     return key;
   }
 
+  public static isKeyUsable(key: KeyPair): boolean {
+    if (key.expires === null) return true;
+
+    return isBefore(new Date(), key.expires);
+  }
+
   public static isKeyExpired(key: KeyPair): boolean {
-    return key.expires === null ? true : isBefore(key.expires, new Date());
+    if (key.expires === null) return false;
+
+    return isAfter(new Date(), key.expires);
+  }
+
+  public static isKeyExpiredTomorrow(key: KeyPair): boolean {
+    if (key.expires === null) return false;
+
+    const tomorrow = add(new Date(), stringToDurationObject("1 days"));
+    return isAfter(tomorrow, key.expires);
   }
 }
