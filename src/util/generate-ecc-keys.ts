@@ -13,7 +13,7 @@ export interface IGenerateECCKeysData {
   type: string;
 }
 
-export const generateECCKeys = (): Promise<IGenerateECCKeysData> => {
+export const generateECCKeys = async (): Promise<IGenerateECCKeysData> => {
   return new Promise((resolve, reject) => {
     generateKeyPair(
       KeyType.EC,

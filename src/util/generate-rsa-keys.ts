@@ -15,7 +15,7 @@ export interface IGenerateRSAKeysData {
   type: string;
 }
 
-export const generateRSAKeys = (passphrase: string = getRandomValue(64)): Promise<IGenerateRSAKeysData> => {
+export const generateRSAKeys = async (passphrase: string = getRandomValue(64)): Promise<IGenerateRSAKeysData> => {
   return new Promise((resolve, reject) => {
     generateKeyPair(
       KeyType.RSA,
