@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`KeyPair.ts should create 1`] = `
+Array [
+  Object {
+    "date": 2020-01-01T07:00:00.000Z,
+    "name": "key_pair_created",
+    "payload": Object {
+      "algorithm": "algorithm",
+      "expires": 2020-01-01T07:00:00.000Z,
+      "passphrase": "passphrase",
+      "privateKey": "privateKey",
+      "publicKey": "publicKey",
+      "type": "type",
+    },
+  },
+]
+`;
+
+exports[`KeyPair.ts should get/set expires 1`] = `
+Array [
+  Object {
+    "date": 2020-01-01T07:00:00.000Z,
+    "name": "key_pair_expires_changed",
+    "payload": Object {
+      "expires": 2020-12-31T23:00:01.000Z,
+    },
+  },
+]
+`;
+
+exports[`KeyPair.ts should have all data 1`] = `
+KeyPair {
+  "_algorithm": "algorithm",
+  "_created": 2020-01-01T07:00:00.000Z,
+  "_events": Array [],
+  "_expires": 2020-01-01T07:00:00.000Z,
+  "_id": "mock-uuid",
+  "_passphrase": "passphrase",
+  "_privateKey": "privateKey",
+  "_publicKey": "publicKey",
+  "_type": "type",
+  "_updated": 2020-01-01T07:00:00.000Z,
+  "_version": 0,
+}
+`;
+
+exports[`KeyPair.ts should have optional data 1`] = `
+KeyPair {
+  "_algorithm": "algorithm",
+  "_created": 2020-01-01T07:00:00.000Z,
+  "_events": Array [],
+  "_expires": null,
+  "_id": "mock-uuid",
+  "_passphrase": null,
+  "_privateKey": null,
+  "_publicKey": null,
+  "_type": "type",
+  "_updated": 2020-01-01T07:00:00.000Z,
+  "_version": 0,
+}
+`;

@@ -1,6 +1,5 @@
 import MockDate from "mockdate";
 import { KeyPair } from "./KeyPair";
-import { KeyPairEvent } from "../enum";
 
 jest.mock("uuid", () => ({
   v4: jest.fn(() => "mock-uuid"),
@@ -24,21 +23,7 @@ describe("KeyPair.ts", () => {
   });
 
   test("should have all data", () => {
-    expect(keyPair).toStrictEqual(
-      expect.objectContaining({
-        _algorithm: "algorithm",
-        _created: date,
-        _events: [],
-        _expires: date,
-        _id: "mock-uuid",
-        _passphrase: "passphrase",
-        _privateKey: "privateKey",
-        _publicKey: "publicKey",
-        _type: "type",
-        _updated: date,
-        _version: 0,
-      }),
-    );
+    expect(keyPair).toMatchSnapshot();
   });
 
   test("should have optional data", () => {
@@ -47,39 +32,12 @@ describe("KeyPair.ts", () => {
       type: "type",
     });
 
-    expect(keyPair).toStrictEqual(
-      expect.objectContaining({
-        _algorithm: "algorithm",
-        _created: date,
-        _events: [],
-        _expires: null,
-        _id: "mock-uuid",
-        _passphrase: null,
-        _privateKey: null,
-        _publicKey: null,
-        _type: "type",
-        _updated: date,
-        _version: 0,
-      }),
-    );
+    expect(keyPair).toMatchSnapshot();
   });
 
   test("should create", () => {
     keyPair.create();
-    expect(keyPair.events).toStrictEqual([
-      {
-        created: date,
-        name: KeyPairEvent.CREATED,
-        payload: {
-          algorithm: "algorithm",
-          expires: date,
-          passphrase: "passphrase",
-          privateKey: "privateKey",
-          publicKey: "publicKey",
-          type: "type",
-        },
-      },
-    ]);
+    expect(keyPair.events).toMatchSnapshot();
   });
 
   test("should get algorithm", () => {
@@ -93,15 +51,7 @@ describe("KeyPair.ts", () => {
     keyPair.expires = expires;
 
     expect(keyPair.expires).toBe(expires);
-    expect(keyPair.events).toStrictEqual([
-      {
-        created: date,
-        name: KeyPairEvent.EXPIRES_CHANGED,
-        payload: {
-          expires: expires,
-        },
-      },
-    ]);
+    expect(keyPair.events).toMatchSnapshot();
   });
 
   test("should get passphrase", () => {
