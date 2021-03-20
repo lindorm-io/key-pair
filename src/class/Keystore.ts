@@ -48,18 +48,21 @@ export class Keystore {
   }
 
   public static isKeyUsable(key: KeyPair): boolean {
+    if (key.allowed === false) return false;
     if (key.expires === null) return true;
 
     return isBefore(new Date(), key.expires);
   }
 
   public static isKeyExpired(key: KeyPair): boolean {
+    if (key.allowed === false) return true;
     if (key.expires === null) return false;
 
     return isAfter(new Date(), key.expires);
   }
 
   public static isKeyExpiredTomorrow(key: KeyPair): boolean {
+    if (key.allowed === false) return true;
     if (key.expires === null) return false;
 
     const tomorrow = add(new Date(), stringToDurationObject("1 days"));

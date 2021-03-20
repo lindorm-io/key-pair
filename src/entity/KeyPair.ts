@@ -3,6 +3,7 @@ import { KeyPairEvent } from "../enum";
 
 export interface IKeyPair extends IEntity {
   algorithm: string;
+  allowed: boolean;
   expires: Date;
   passphrase: string;
   privateKey: string;
@@ -12,6 +13,7 @@ export interface IKeyPair extends IEntity {
 
 export interface IKeyPairOptions extends IEntityBaseOptions {
   algorithm: string;
+  allowed?: boolean;
   expires?: Date;
   passphrase?: string;
   privateKey?: string;
@@ -21,6 +23,7 @@ export interface IKeyPairOptions extends IEntityBaseOptions {
 
 export class KeyPair extends EntityBase implements IKeyPair {
   private _algorithm: string;
+  private _allowed: boolean;
   private _expires: Date;
   private _passphrase: string;
   private _privateKey: string;
@@ -31,6 +34,7 @@ export class KeyPair extends EntityBase implements IKeyPair {
     super(options);
 
     this._algorithm = options.algorithm;
+    this._allowed = options.allowed !== false;
     this._expires = options.expires || null;
     this._passphrase = options.passphrase || null;
     this._privateKey = options.privateKey || null;
@@ -40,6 +44,14 @@ export class KeyPair extends EntityBase implements IKeyPair {
 
   public get algorithm(): string {
     return this._algorithm;
+  }
+
+  public get allowed(): boolean {
+    return this._allowed;
+  }
+  public set allowed(allowed: boolean) {
+    this._allowed = allowed;
+    this.addEvent(KeyPairEvent.ALLOWED_CHANGED, { allowed: this._allowed });
   }
 
   public get expires(): Date {
@@ -74,11 +86,12 @@ export class KeyPair extends EntityBase implements IKeyPair {
 
     this.addEvent(KeyPairEvent.CREATED, {
       algorithm: this._algorithm,
+      allowed: this._allowed,
+      expires: this._expires,
       passphrase: this._passphrase,
       privateKey: this._privateKey,
       publicKey: this._publicKey,
       type: this._type,
-      expires: this._expires,
     });
   }
 }

@@ -1,10 +1,6 @@
 import MockDate from "mockdate";
 import { KeyPair } from "./KeyPair";
 
-jest.mock("uuid", () => ({
-  v4: jest.fn(() => "mock-uuid"),
-}));
-
 MockDate.set("2020-01-01 08:00:00.000");
 const date = new Date("2020-01-01 08:00:00.000");
 
@@ -13,7 +9,9 @@ describe("KeyPair.ts", () => {
 
   beforeEach(() => {
     keyPair = new KeyPair({
+      id: "mock-uuid",
       algorithm: "algorithm",
+      allowed: true,
       expires: date,
       passphrase: "passphrase",
       privateKey: "privateKey",
@@ -28,6 +26,7 @@ describe("KeyPair.ts", () => {
 
   test("should have optional data", () => {
     keyPair = new KeyPair({
+      id: "mock-uuid",
       algorithm: "algorithm",
       type: "type",
     });
@@ -42,6 +41,16 @@ describe("KeyPair.ts", () => {
 
   test("should get algorithm", () => {
     expect(keyPair.algorithm).toBe("algorithm");
+  });
+
+  test("should get/set allowed", () => {
+    expect(keyPair.allowed).toBe(true);
+
+    const allowed = false;
+    keyPair.allowed = false;
+
+    expect(keyPair.allowed).toBe(allowed);
+    expect(keyPair.events).toMatchSnapshot();
   });
 
   test("should get/set expires", () => {

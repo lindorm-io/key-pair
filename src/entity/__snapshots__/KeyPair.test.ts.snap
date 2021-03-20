@@ -7,11 +7,24 @@ Array [
     "name": "key_pair_created",
     "payload": Object {
       "algorithm": "algorithm",
+      "allowed": true,
       "expires": 2020-01-01T07:00:00.000Z,
       "passphrase": "passphrase",
       "privateKey": "privateKey",
       "publicKey": "publicKey",
       "type": "type",
+    },
+  },
+]
+`;
+
+exports[`KeyPair.ts should get/set allowed 1`] = `
+Array [
+  Object {
+    "date": 2020-01-01T07:00:00.000Z,
+    "name": "key_pair_allowed_changed",
+    "payload": Object {
+      "allowed": false,
     },
   },
 ]
@@ -32,6 +45,7 @@ Array [
 exports[`KeyPair.ts should have all data 1`] = `
 KeyPair {
   "_algorithm": "algorithm",
+  "_allowed": true,
   "_created": 2020-01-01T07:00:00.000Z,
   "_events": Array [],
   "_expires": 2020-01-01T07:00:00.000Z,
@@ -48,6 +62,7 @@ KeyPair {
 exports[`KeyPair.ts should have optional data 1`] = `
 KeyPair {
   "_algorithm": "algorithm",
+  "_allowed": true,
   "_created": 2020-01-01T07:00:00.000Z,
   "_events": Array [],
   "_expires": null,
