@@ -1,4 +1,4 @@
-import { EntityBase, IEntity, IEntityBaseOptions, EntityCreationError } from "@lindorm-io/core";
+import { EntityBase, IEntity, IEntityBaseOptions, EntityCreationError } from "@lindorm-io/entity";
 import { KeyPairEvent } from "../enum";
 
 export interface IKeyPair extends IEntity {
