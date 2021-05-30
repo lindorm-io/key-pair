@@ -1,4 +1,4 @@
 export enum KeyType {
-  EC = "ec",
-  RSA = "rsa",
+  EC = "EC",
+  RSA = "RSA",
 }
