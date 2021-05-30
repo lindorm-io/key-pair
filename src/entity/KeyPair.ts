@@ -1,13 +1,15 @@
 import Joi from "joi";
 import { Algorithm, KeyPairEvent, KeyType, NamedCurve } from "../enum";
+import { orderBy } from "lodash";
 import {
   EntityBase,
   EntityCreationError,
+  IEntity,
   IEntityAttributes,
   IEntityOptions,
   JOI_ENTITY_BASE,
 } from "@lindorm-io/entity";
-import { JOI_KEY_ALGORITHMS, JOI_KEY_NAMED_CURVE, JOI_KEY_TYPE } from "../constant";
+import { JOI_KEY_ALGORITHM, JOI_KEY_ALGORITHMS, JOI_KEY_NAMED_CURVE, JOI_KEY_TYPE } from "../constant";
 
 export interface IKeyPairAttributes extends IEntityAttributes {
   algorithms: Array<Algorithm>;
@@ -15,6 +17,7 @@ export interface IKeyPairAttributes extends IEntityAttributes {
   expires: Date | null;
   namedCurve: NamedCurve | null;
   passphrase: string | null;
+  preferredAlgorithm: Algorithm;
   privateKey: string | null;
   publicKey: string;
   type: KeyType;
@@ -26,6 +29,7 @@ export interface IKeyPairOptions extends IEntityOptions {
   expires?: Date;
   namedCurve?: NamedCurve;
   passphrase?: string;
+  preferredAlgorithm?: Algorithm;
   privateKey?: string;
   publicKey: string;
   type: KeyType;
@@ -39,12 +43,13 @@ const schema = Joi.object({
   expires: Joi.date().allow(null).required(),
   namedCurve: JOI_KEY_NAMED_CURVE.allow(null).required(),
   passphrase: Joi.string().allow(null).required(),
+  preferredAlgorithm: JOI_KEY_ALGORITHM.required(),
   privateKey: Joi.string().allow(null).required(),
   publicKey: Joi.string().required(),
   type: JOI_KEY_TYPE.required(),
 });
 
-export class KeyPair extends EntityBase<IKeyPairAttributes> {
+export class KeyPair extends EntityBase<IKeyPairAttributes> implements IEntity<IKeyPairAttributes> {
   public readonly algorithms: Array<Algorithm>;
   public readonly namedCurve: NamedCurve | null;
   public readonly passphrase: string | null;
@@ -53,12 +58,14 @@ export class KeyPair extends EntityBase<IKeyPairAttributes> {
   public readonly type: KeyType;
   private _allowed: boolean;
   private _expires: Date | null;
+  private _preferredAlgorithm: Algorithm;
 
   public constructor(options: IKeyPairOptions) {
     super(options);
 
     this._allowed = options.allowed !== false;
     this._expires = options.expires || null;
+    this._preferredAlgorithm = options.preferredAlgorithm || orderBy(options.algorithms, [(item) => item], ["desc"])[0];
 
     this.algorithms = options.algorithms;
     this.namedCurve = options.namedCurve || null;
@@ -82,6 +89,14 @@ export class KeyPair extends EntityBase<IKeyPairAttributes> {
   public set expires(expires: Date | null) {
     this._expires = expires;
     this.addEvent(KeyPairEvent.EXPIRES_CHANGED, { expires: this._expires });
+  }
+
+  public get preferredAlgorithm(): Algorithm {
+    return this._preferredAlgorithm;
+  }
+  public set preferredAlgorithm(preferredAlgorithm: Algorithm) {
+    this._preferredAlgorithm = preferredAlgorithm;
+    this.addEvent(KeyPairEvent.PREFERRED_ALGORITHM_CHANGED, { preferredAlgorithm: this._preferredAlgorithm });
   }
 
   public create(): void {
@@ -110,6 +125,7 @@ export class KeyPair extends EntityBase<IKeyPairAttributes> {
       expires: this.expires,
       namedCurve: this.namedCurve,
       passphrase: this.passphrase,
+      preferredAlgorithm: this.preferredAlgorithm,
       privateKey: this.privateKey,
       publicKey: this.publicKey,
       type: this.type,

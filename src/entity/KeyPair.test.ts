@@ -29,7 +29,7 @@ describe("KeyPair.ts", () => {
   test("should have optional data", () => {
     keyPair = new KeyPair({
       id: "02dc19eb-2b8b-4a83-a0c0-9ac2b306bb9a",
-      algorithms: [Algorithm.RS256],
+      algorithms: [Algorithm.RS256, Algorithm.RS384],
       publicKey: "publicKey",
       type: KeyType.RSA,
     });
