@@ -5,6 +5,26 @@ import { Algorithm, KeyType, NamedCurve } from "../enum";
 
 MockDate.set("2020-01-02T08:00:00.000Z");
 
+jest.mock("../util", () => ({
+  decodeKeys: () => ({
+    privateKey: "privateKey",
+    publicKey: "publicKey",
+  }),
+  encodeKeys: () => ({
+    crv: "crv",
+    d: "d",
+    dp: "dp",
+    dq: "dq",
+    e: "e",
+    n: "n",
+    p: "p",
+    q: "q",
+    qi: "qi",
+    x: "x",
+    y: "y",
+  }),
+}));
+
 describe("Keystore.ts", () => {
   const key1 = new KeyPair({
     id: "8cf5c1eb-f51d-404e-8b1b-14e5f84018ce",
@@ -70,11 +90,15 @@ describe("Keystore.ts", () => {
     expect(keystore.getAllKeys()).toStrictEqual([key5, key4, key3, key2, key1]);
   });
 
-  test("should get the current key", () => {
+  test("should return keys as jwks", () => {
+    expect(keystore.getJWKS(true)).toMatchSnapshot();
+  });
+
+  test("should return the current key", () => {
     expect(keystore.getCurrentKey()).toStrictEqual(key4);
   });
 
-  test("should get a specific key", () => {
+  test("should return a specific key", () => {
     expect(keystore.getKey("73b5f592-15db-40a1-8b09-ce835dc2afae")).toStrictEqual(key2);
   });
 
