@@ -4,8 +4,6 @@ import { generateKeyPair } from "crypto";
 interface IOptions {
   modulusLength?: 1 | 2 | 3 | 4;
   passphrase?: string;
-  privateKeyEncoding?: "pkcs1" | "pkcs8";
-  publicKeyEncoding?: "pkcs1" | "spki";
 }
 
 export interface IGenerateRSAKeysData {
@@ -16,20 +14,20 @@ export interface IGenerateRSAKeysData {
   type: KeyType;
 }
 
-export const generateRSAKeys = async (options: IOptions = {}): Promise<IGenerateRSAKeysData> => {
-  const { modulusLength = 4, passphrase = "", privateKeyEncoding = "pkcs8", publicKeyEncoding = "spki" } = options;
+export const generateRsaKeys = async (options: IOptions = {}): Promise<IGenerateRSAKeysData> => {
+  const { modulusLength = 4, passphrase = "" } = options;
 
   return new Promise((resolve, reject) => {
     generateKeyPair(
-      KeyType.RSA,
+      "rsa",
       {
         modulusLength: modulusLength * 1024,
         publicKeyEncoding: {
-          type: publicKeyEncoding,
+          type: "pkcs1",
           format: "pem",
         },
         privateKeyEncoding: {
-          type: privateKeyEncoding,
+          type: "pkcs8",
           format: "pem",
           cipher: "aes-256-cbc",
           passphrase,

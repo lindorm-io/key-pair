@@ -1,26 +1,26 @@
-import { generateECCKeys as _generateECCKeys } from "./generate-ecc-keys";
-import { generateRSAKeys as _generateRSAKeys } from "./generate-rsa-keys";
+import { generateEcKeys as _generateEcKeys } from "./generate-ec-keys";
+import { generateRsaKeys as _generateRsaKeys } from "./generate-rsa-keys";
 import { generateKeyPair } from "./generate-key-pair";
 import { KeyType, NamedCurve } from "../enum";
 import { KeyPair } from "../entity";
 
-jest.mock("./generate-ecc-keys", () => ({
-  generateECCKeys: jest.fn().mockResolvedValue({
+jest.mock("./generate-ec-keys", () => ({
+  generateEcKeys: jest.fn().mockResolvedValue({
     algorithms: ["algorithms"],
     privateKey: "ec-privateKey",
     publicKey: "ec-publicKey",
   }),
 }));
 jest.mock("./generate-rsa-keys", () => ({
-  generateRSAKeys: jest.fn().mockResolvedValue({
+  generateRsaKeys: jest.fn().mockResolvedValue({
     algorithms: ["algorithms"],
     privateKey: "rsa-privateKey",
     publicKey: "rsa-publicKey",
   }),
 }));
 
-const generateECCKeys = _generateECCKeys as jest.Mock;
-const generateRSAKeys = _generateRSAKeys as jest.Mock;
+const generateEcKeys = _generateEcKeys as jest.Mock;
+const generateRsaKeys = _generateRsaKeys as jest.Mock;
 
 describe("generateKeyPair", () => {
   afterEach(jest.clearAllMocks);
@@ -28,7 +28,7 @@ describe("generateKeyPair", () => {
   test("should generate EC KeyPair", async () => {
     await expect(generateKeyPair({ type: KeyType.EC })).resolves.toStrictEqual(expect.any(KeyPair));
 
-    expect(generateECCKeys).toHaveBeenCalled();
+    expect(generateEcKeys).toHaveBeenCalled();
   });
 
   test("should generate EC KeyPair with namedCurve", async () => {
@@ -36,13 +36,13 @@ describe("generateKeyPair", () => {
       expect.any(KeyPair),
     );
 
-    expect(generateECCKeys).toHaveBeenCalledWith({ namedCurve: NamedCurve.P384 });
+    expect(generateEcKeys).toHaveBeenCalledWith({ namedCurve: NamedCurve.P384 });
   });
 
   test("should generate RSA KeyPair", async () => {
     await expect(generateKeyPair({ type: KeyType.RSA })).resolves.toStrictEqual(expect.any(KeyPair));
 
-    expect(generateRSAKeys).toHaveBeenCalled();
+    expect(generateRsaKeys).toHaveBeenCalled();
   });
 
   test("should generate RSA KeyPair with passphrase", async () => {
@@ -50,6 +50,6 @@ describe("generateKeyPair", () => {
       expect.any(KeyPair),
     );
 
-    expect(generateRSAKeys).toHaveBeenCalledWith({ passphrase: "pass" });
+    expect(generateRsaKeys).toHaveBeenCalledWith({ passphrase: "pass" });
   });
 });

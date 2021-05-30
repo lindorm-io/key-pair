@@ -1,7 +1,7 @@
 import { Algorithm, KeyType, NamedCurve } from "../enum";
 import { KeyPair } from "../entity";
-import { generateECCKeys } from "./generate-ecc-keys";
-import { generateRSAKeys } from "./generate-rsa-keys";
+import { generateEcKeys } from "./generate-ec-keys";
+import { generateRsaKeys } from "./generate-rsa-keys";
 
 interface IOptions {
   namedCurve?: NamedCurve;
@@ -18,11 +18,11 @@ export const generateKeyPair = async (options: IOptions): Promise<KeyPair> => {
 
   switch (type) {
     case KeyType.EC:
-      ({ algorithms, privateKey, publicKey } = await generateECCKeys({ namedCurve }));
+      ({ algorithms, privateKey, publicKey } = await generateEcKeys({ namedCurve }));
       break;
 
     case KeyType.RSA:
-      ({ algorithms, privateKey, publicKey } = await generateRSAKeys({ passphrase }));
+      ({ algorithms, privateKey, publicKey } = await generateRsaKeys({ passphrase }));
       break;
 
     default:
