@@ -1,31 +1,35 @@
-import { Algorithm, KeyType } from "../enum";
+import { Algorithm, KeyType, NamedCurve } from "../enum";
 import { generateKeyPair } from "crypto";
 
-const NAMED_CURVE = "P-521";
-const KEY_FORMAT = "pem";
-const KEY_ENCODING_PUBLIC = "spki";
-const KEY_ENCODING_PRIVATE = "pkcs8";
-
-export interface IGenerateECCKeysData {
-  algorithm: string;
-  privateKey: string;
-  publicKey: string;
-  type: string;
+interface IOptions {
+  namedCurve?: NamedCurve;
+  privateKeyEncoding?: "sec1" | "pkcs8";
+  publicKeyEncoding?: "pkcs1" | "spki";
 }
 
-export const generateECCKeys = async (): Promise<IGenerateECCKeysData> => {
+export interface IGenerateECCKeysData {
+  algorithms: Array<Algorithm>;
+  namedCurve: NamedCurve;
+  privateKey: string;
+  publicKey: string;
+  type: KeyType;
+}
+
+export const generateECCKeys = async (options: IOptions = {}): Promise<IGenerateECCKeysData> => {
+  const { namedCurve = NamedCurve.P521, publicKeyEncoding = "spki", privateKeyEncoding = "sec1" } = options;
+
   return new Promise((resolve, reject) => {
     generateKeyPair(
       KeyType.EC,
       {
-        namedCurve: NAMED_CURVE,
+        namedCurve,
         publicKeyEncoding: {
-          type: KEY_ENCODING_PUBLIC,
-          format: KEY_FORMAT,
+          type: publicKeyEncoding,
+          format: "pem",
         },
         privateKeyEncoding: {
-          type: KEY_ENCODING_PRIVATE,
-          format: KEY_FORMAT,
+          type: privateKeyEncoding,
+          format: "pem",
         },
       },
       (err, publicKey, privateKey) => {
@@ -33,7 +37,8 @@ export const generateECCKeys = async (): Promise<IGenerateECCKeysData> => {
           reject(err);
         }
         resolve({
-          algorithm: Algorithm.ES512,
+          algorithms: [Algorithm.ES256, Algorithm.ES384, Algorithm.ES512],
+          namedCurve,
           privateKey,
           publicKey,
           type: KeyType.EC,

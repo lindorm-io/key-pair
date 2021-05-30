@@ -1,21 +1,57 @@
 import { generateRSAKeys } from "./generate-rsa-keys";
 
-describe("generate-rsa-keys.ts", () => {
-  test("should generate a private/public key pair", async () => {
+describe("generateRSAKeys", () => {
+  test("should generate with default options", async () => {
     const result = await generateRSAKeys();
 
-    expect(result.algorithm).toBe("RS512");
+    expect(result.publicKey).toContain("-----BEGIN PUBLIC KEY-----");
+    expect(result.publicKey).toContain("-----END PUBLIC KEY-----");
+    expect(result.publicKey.length).toBe(800);
 
-    expect(result.passphrase.length).toBe(64);
-
-    expect(result.publicKey).toContain("-----BEGIN RSA PUBLIC KEY-----");
-    expect(result.publicKey).toContain("-----END RSA PUBLIC KEY-----");
-    expect(result.publicKey.length).toBe(775);
-
-    expect(result.privateKey).toContain("-----BEGIN RSA PRIVATE KEY-----");
-    expect(result.privateKey).toContain("-----END RSA PRIVATE KEY-----");
-    expect(result.privateKey.length).toBe(3326);
+    expect(result.privateKey).toContain("-----BEGIN ENCRYPTED PRIVATE KEY-----");
+    expect(result.privateKey).toContain("-----END ENCRYPTED PRIVATE KEY-----");
+    expect(result.privateKey.length).toBe(3434);
 
     expect(result.type).toBe("rsa");
+  });
+
+  test("should generate with modulusLength 1", async () => {
+    const result = await generateRSAKeys({ modulusLength: 1 });
+
+    expect(result.publicKey.length).toBe(272);
+    expect(result.privateKey.length).toBe(1074);
+  });
+
+  test("should generate with modulusLength 2", async () => {
+    const result = await generateRSAKeys({ modulusLength: 2 });
+
+    expect(result.publicKey.length).toBe(451);
+    expect(result.privateKey.length).toBe(1874);
+  });
+
+  test("should generate with modulusLength 3", async () => {
+    const result = await generateRSAKeys({ modulusLength: 3 });
+
+    expect(result.publicKey.length).toBe(625);
+    expect(result.privateKey.length).toBe(2654);
+  });
+
+  test("should generate with passphrase", async () => {
+    const result = await generateRSAKeys({ passphrase: "passphrase" });
+
+    expect(result.publicKey.length).toBe(800);
+    expect(result.privateKey.length).toBe(3434);
+  });
+
+  test("should generate with privateKeyEncoding", async () => {
+    const result = await generateRSAKeys({ privateKeyEncoding: "pkcs1" });
+
+    expect(result.privateKey.length).toBe(3326);
+  });
+
+  test("should generate with publicKeyEncoding", async () => {
+    const result = await generateRSAKeys({ publicKeyEncoding: "pkcs1" });
+
+    expect(result.publicKey.length).toBe(775);
   });
 });

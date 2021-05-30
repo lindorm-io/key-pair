@@ -1,43 +1,45 @@
 import { Algorithm, KeyType } from "../enum";
 import { generateKeyPair } from "crypto";
-import { getRandomValue } from "@lindorm-io/core";
 
-const MODULUS_LENGTH = 4096;
-const KEY_ENCODING = "pkcs1";
-const KEY_FORMAT = "pem";
-const PRIVATE_KEY_CIPHER = "aes-256-cbc";
+interface IOptions {
+  modulusLength?: 1 | 2 | 3 | 4;
+  passphrase?: string;
+  privateKeyEncoding?: "pkcs1" | "pkcs8";
+  publicKeyEncoding?: "pkcs1" | "spki";
+}
 
 export interface IGenerateRSAKeysData {
-  algorithm: string;
+  algorithms: Array<Algorithm>;
   passphrase: string;
   privateKey: string;
   publicKey: string;
-  type: string;
+  type: KeyType;
 }
 
-export const generateRSAKeys = async (passphrase: string = getRandomValue(64)): Promise<IGenerateRSAKeysData> => {
+export const generateRSAKeys = async (options: IOptions = {}): Promise<IGenerateRSAKeysData> => {
+  const { modulusLength = 4, passphrase = "", privateKeyEncoding = "pkcs8", publicKeyEncoding = "spki" } = options;
+
   return new Promise((resolve, reject) => {
     generateKeyPair(
       KeyType.RSA,
       {
-        modulusLength: MODULUS_LENGTH,
+        modulusLength: modulusLength * 1024,
         publicKeyEncoding: {
-          type: KEY_ENCODING,
-          format: KEY_FORMAT,
+          type: publicKeyEncoding,
+          format: "pem",
         },
         privateKeyEncoding: {
-          type: KEY_ENCODING,
-          format: KEY_FORMAT,
-          cipher: PRIVATE_KEY_CIPHER,
+          type: privateKeyEncoding,
+          format: "pem",
+          cipher: "aes-256-cbc",
           passphrase,
         },
       },
       (err, publicKey, privateKey) => {
-        if (err) {
-          reject(err);
-        }
+        if (err) reject(err);
+
         resolve({
-          algorithm: Algorithm.RS512,
+          algorithms: [Algorithm.RS256, Algorithm.RS384, Algorithm.RS512],
           passphrase,
           privateKey,
           publicKey,
