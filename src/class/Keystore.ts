@@ -1,16 +1,15 @@
 import { KeyPair } from "../entity";
 import { filter, find, orderBy } from "lodash";
-import { add, isAfter, isBefore } from "date-fns";
-import { stringToDurationObject } from "@lindorm-io/core";
+import { isAfter, isBefore } from "date-fns";
 
 export interface IKeystoreOptions {
   keys: Array<KeyPair>;
 }
 
 export class Keystore {
-  private keys: Array<KeyPair>;
+  private readonly keys: Array<KeyPair>;
 
-  constructor(options: IKeystoreOptions) {
+  public constructor(options: IKeystoreOptions) {
     const keys = options.keys || [];
     this.keys = orderBy(keys, ["created", "expires"], ["desc", "asc"]);
   }
@@ -48,24 +47,16 @@ export class Keystore {
   }
 
   public static isKeyUsable(key: KeyPair): boolean {
-    if (key.allowed === false) return false;
+    if (!key.allowed) return false;
     if (key.expires === null) return true;
 
     return isBefore(new Date(), key.expires);
   }
 
   public static isKeyExpired(key: KeyPair): boolean {
-    if (key.allowed === false) return true;
+    if (!key.allowed) return true;
     if (key.expires === null) return false;
 
     return isAfter(new Date(), key.expires);
-  }
-
-  public static isKeyExpiredTomorrow(key: KeyPair): boolean {
-    if (key.allowed === false) return true;
-    if (key.expires === null) return false;
-
-    const tomorrow = add(new Date(), stringToDurationObject("1 days"));
-    return isAfter(tomorrow, key.expires);
   }
 }
