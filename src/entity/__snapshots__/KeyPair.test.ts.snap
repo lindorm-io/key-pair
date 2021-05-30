@@ -3,25 +3,53 @@
 exports[`KeyPair.ts should create 1`] = `
 Array [
   Object {
-    "date": 2020-01-01T07:00:00.000Z,
+    "date": 2020-01-01T08:00:00.000Z,
     "name": "key_pair_created",
     "payload": Object {
-      "algorithm": "algorithm",
+      "algorithms": Array [
+        "ES512",
+      ],
       "allowed": true,
-      "expires": 2020-01-01T07:00:00.000Z,
-      "passphrase": "passphrase",
+      "created": 2020-01-01T08:00:00.000Z,
+      "events": [Circular],
+      "expires": 2020-01-01T08:00:00.000Z,
+      "id": "259ff47d-e334-4784-a478-04bf6d6b5d84",
+      "namedCurve": "P-521",
+      "passphrase": null,
       "privateKey": "privateKey",
       "publicKey": "publicKey",
-      "type": "type",
+      "type": "ec",
+      "updated": 2020-01-01T08:00:00.000Z,
+      "version": 0,
     },
   },
 ]
 `;
 
+exports[`KeyPair.ts should get json 1`] = `
+Object {
+  "algorithms": Array [
+    "ES512",
+  ],
+  "allowed": true,
+  "created": 2020-01-01T08:00:00.000Z,
+  "events": Array [],
+  "expires": 2020-01-01T08:00:00.000Z,
+  "id": "259ff47d-e334-4784-a478-04bf6d6b5d84",
+  "namedCurve": "P-521",
+  "passphrase": null,
+  "privateKey": "privateKey",
+  "publicKey": "publicKey",
+  "type": "ec",
+  "updated": 2020-01-01T08:00:00.000Z,
+  "version": 0,
+}
+`;
+
 exports[`KeyPair.ts should get/set allowed 1`] = `
 Array [
   Object {
-    "date": 2020-01-01T07:00:00.000Z,
+    "date": 2020-01-01T08:00:00.000Z,
     "name": "key_pair_allowed_changed",
     "payload": Object {
       "allowed": false,
@@ -33,45 +61,51 @@ Array [
 exports[`KeyPair.ts should get/set expires 1`] = `
 Array [
   Object {
-    "date": 2020-01-01T07:00:00.000Z,
+    "date": 2020-01-01T08:00:00.000Z,
     "name": "key_pair_expires_changed",
     "payload": Object {
-      "expires": 2020-12-31T23:00:01.000Z,
+      "expires": 2021-01-01T00:00:01.000Z,
     },
   },
 ]
 `;
 
 exports[`KeyPair.ts should have all data 1`] = `
-KeyPair {
-  "_algorithm": "algorithm",
-  "_allowed": true,
-  "_created": 2020-01-01T07:00:00.000Z,
-  "_events": Array [],
-  "_expires": 2020-01-01T07:00:00.000Z,
-  "_id": "mock-uuid",
-  "_passphrase": "passphrase",
-  "_privateKey": "privateKey",
-  "_publicKey": "publicKey",
-  "_type": "type",
-  "_updated": 2020-01-01T07:00:00.000Z,
-  "_version": 0,
+Object {
+  "algorithms": Array [
+    "ES512",
+  ],
+  "allowed": true,
+  "created": 2020-01-01T08:00:00.000Z,
+  "events": Array [],
+  "expires": 2020-01-01T08:00:00.000Z,
+  "id": "259ff47d-e334-4784-a478-04bf6d6b5d84",
+  "namedCurve": "P-521",
+  "passphrase": null,
+  "privateKey": "privateKey",
+  "publicKey": "publicKey",
+  "type": "ec",
+  "updated": 2020-01-01T08:00:00.000Z,
+  "version": 0,
 }
 `;
 
 exports[`KeyPair.ts should have optional data 1`] = `
-KeyPair {
-  "_algorithm": "algorithm",
-  "_allowed": true,
-  "_created": 2020-01-01T07:00:00.000Z,
-  "_events": Array [],
-  "_expires": null,
-  "_id": "mock-uuid",
-  "_passphrase": null,
-  "_privateKey": null,
-  "_publicKey": null,
-  "_type": "type",
-  "_updated": 2020-01-01T07:00:00.000Z,
-  "_version": 0,
+Object {
+  "algorithms": Array [
+    "RS256",
+  ],
+  "allowed": true,
+  "created": 2020-01-01T08:00:00.000Z,
+  "events": Array [],
+  "expires": null,
+  "id": "02dc19eb-2b8b-4a83-a0c0-9ac2b306bb9a",
+  "namedCurve": null,
+  "passphrase": null,
+  "privateKey": null,
+  "publicKey": "publicKey",
+  "type": "rsa",
+  "updated": 2020-01-01T08:00:00.000Z,
+  "version": 0,
 }
 `;

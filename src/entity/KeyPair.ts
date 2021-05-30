@@ -1,49 +1,71 @@
-import { EntityBase, IEntity, IEntityBaseOptions, EntityCreationError } from "@lindorm-io/entity";
-import { KeyPairEvent } from "../enum";
+import Joi from "joi";
+import { Algorithm, KeyPairEvent, KeyType, NamedCurve } from "../enum";
+import {
+  EntityBase,
+  EntityCreationError,
+  IEntityAttributes,
+  IEntityOptions,
+  JOI_ENTITY_BASE,
+} from "@lindorm-io/entity";
+import { JOI_KEY_ALGORITHMS, JOI_KEY_NAMED_CURVE, JOI_KEY_TYPE } from "../constant";
 
-export interface IKeyPair extends IEntity {
-  algorithm: string;
+export interface IKeyPairAttributes extends IEntityAttributes {
+  algorithms: Array<Algorithm>;
   allowed: boolean;
-  expires: Date;
-  passphrase: string;
-  privateKey: string;
+  expires: Date | null;
+  namedCurve: NamedCurve | null;
+  passphrase: string | null;
+  privateKey: string | null;
   publicKey: string;
-  type: string;
+  type: KeyType;
 }
 
-export interface IKeyPairOptions extends IEntityBaseOptions {
-  algorithm: string;
+export interface IKeyPairOptions extends IEntityOptions {
+  algorithms: Array<Algorithm>;
   allowed?: boolean;
   expires?: Date;
+  namedCurve?: NamedCurve;
   passphrase?: string;
   privateKey?: string;
-  publicKey?: string;
-  type: string;
+  publicKey: string;
+  type: KeyType;
 }
 
-export class KeyPair extends EntityBase implements IKeyPair {
-  private _algorithm: string;
-  private _allowed: boolean;
-  private _expires: Date;
-  private _passphrase: string;
-  private _privateKey: string;
-  private _publicKey: string;
-  private _type: string;
+const schema = Joi.object({
+  ...JOI_ENTITY_BASE,
 
-  constructor(options: IKeyPairOptions) {
+  algorithms: JOI_KEY_ALGORITHMS.required(),
+  allowed: Joi.boolean().required(),
+  expires: Joi.date().allow(null).required(),
+  namedCurve: JOI_KEY_NAMED_CURVE.allow(null).required(),
+  passphrase: Joi.string().allow(null).required(),
+  privateKey: Joi.string().allow(null).required(),
+  publicKey: Joi.string().required(),
+  type: JOI_KEY_TYPE.required(),
+});
+
+export class KeyPair extends EntityBase<IKeyPairAttributes> {
+  public readonly algorithms: Array<Algorithm>;
+  public readonly namedCurve: NamedCurve | null;
+  public readonly passphrase: string | null;
+  public readonly privateKey: string | null;
+  public readonly publicKey: string;
+  public readonly type: KeyType;
+  private _allowed: boolean;
+  private _expires: Date | null;
+
+  public constructor(options: IKeyPairOptions) {
     super(options);
 
-    this._algorithm = options.algorithm;
     this._allowed = options.allowed !== false;
     this._expires = options.expires || null;
-    this._passphrase = options.passphrase || null;
-    this._privateKey = options.privateKey || null;
-    this._publicKey = options.publicKey || null;
-    this._type = options.type;
-  }
 
-  public get algorithm(): string {
-    return this._algorithm;
+    this.algorithms = options.algorithms;
+    this.namedCurve = options.namedCurve || null;
+    this.passphrase = options.passphrase || null;
+    this.privateKey = options.privateKey || null;
+    this.publicKey = options.publicKey;
+    this.type = options.type;
   }
 
   public get allowed(): boolean {
@@ -54,44 +76,43 @@ export class KeyPair extends EntityBase implements IKeyPair {
     this.addEvent(KeyPairEvent.ALLOWED_CHANGED, { allowed: this._allowed });
   }
 
-  public get expires(): Date {
+  public get expires(): Date | null {
     return this._expires;
   }
-  public set expires(expires: Date) {
+  public set expires(expires: Date | null) {
     this._expires = expires;
     this.addEvent(KeyPairEvent.EXPIRES_CHANGED, { expires: this._expires });
   }
 
-  public get passphrase(): string {
-    return this._passphrase;
-  }
-
-  public get privateKey(): string {
-    return this._privateKey;
-  }
-
-  public get publicKey(): string {
-    return this._publicKey;
-  }
-
-  public get type(): string {
-    return this._type;
-  }
-
   public create(): void {
-    for (const evt of this._events) {
+    for (const evt of this.events) {
       if (evt.name !== KeyPairEvent.CREATED) continue;
       throw new EntityCreationError(this.constructor.name);
     }
 
-    this.addEvent(KeyPairEvent.CREATED, {
-      algorithm: this._algorithm,
-      allowed: this._allowed,
-      expires: this._expires,
-      passphrase: this._passphrase,
-      privateKey: this._privateKey,
-      publicKey: this._publicKey,
-      type: this._type,
-    });
+    this.addEvent(KeyPairEvent.CREATED, this.toJSON());
+  }
+
+  public getKey(): string {
+    return this.id;
+  }
+
+  public async schemaValidation(): Promise<void> {
+    await schema.validateAsync(this.toJSON());
+  }
+
+  public toJSON(): IKeyPairAttributes {
+    return {
+      ...this.defaultJSON(),
+
+      algorithms: this.algorithms,
+      allowed: this.allowed,
+      expires: this.expires,
+      namedCurve: this.namedCurve,
+      passphrase: this.passphrase,
+      privateKey: this.privateKey,
+      publicKey: this.publicKey,
+      type: this.type,
+    };
   }
 }

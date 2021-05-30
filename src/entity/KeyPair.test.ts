@@ -1,5 +1,6 @@
 import MockDate from "mockdate";
 import { KeyPair } from "./KeyPair";
+import { Algorithm, KeyType, NamedCurve } from "../enum";
 
 MockDate.set("2020-01-01 08:00:00.000");
 const date = new Date("2020-01-01 08:00:00.000");
@@ -9,14 +10,15 @@ describe("KeyPair.ts", () => {
 
   beforeEach(() => {
     keyPair = new KeyPair({
-      id: "mock-uuid",
-      algorithm: "algorithm",
+      id: "259ff47d-e334-4784-a478-04bf6d6b5d84",
+      algorithms: [Algorithm.ES512],
       allowed: true,
       expires: date,
-      passphrase: "passphrase",
+      namedCurve: NamedCurve.P521,
+      passphrase: "",
       privateKey: "privateKey",
       publicKey: "publicKey",
-      type: "type",
+      type: KeyType.EC,
     });
   });
 
@@ -26,21 +28,13 @@ describe("KeyPair.ts", () => {
 
   test("should have optional data", () => {
     keyPair = new KeyPair({
-      id: "mock-uuid",
-      algorithm: "algorithm",
-      type: "type",
+      id: "02dc19eb-2b8b-4a83-a0c0-9ac2b306bb9a",
+      algorithms: [Algorithm.RS256],
+      publicKey: "publicKey",
+      type: KeyType.RSA,
     });
 
     expect(keyPair).toMatchSnapshot();
-  });
-
-  test("should create", () => {
-    keyPair.create();
-    expect(keyPair.events).toMatchSnapshot();
-  });
-
-  test("should get algorithm", () => {
-    expect(keyPair.algorithm).toBe("algorithm");
   });
 
   test("should get/set allowed", () => {
@@ -63,19 +57,20 @@ describe("KeyPair.ts", () => {
     expect(keyPair.events).toMatchSnapshot();
   });
 
-  test("should get passphrase", () => {
-    expect(keyPair.passphrase).toBe("passphrase");
+  test("should create", () => {
+    keyPair.create();
+    expect(keyPair.events).toMatchSnapshot();
   });
 
-  test("should get privateKey", () => {
-    expect(keyPair.privateKey).toBe("privateKey");
+  test("should get key", () => {
+    expect(keyPair.getKey()).toBe("259ff47d-e334-4784-a478-04bf6d6b5d84");
   });
 
-  test("should get publicKey", () => {
-    expect(keyPair.publicKey).toBe("publicKey");
+  test("should validate schema", async () => {
+    await expect(keyPair.schemaValidation()).resolves.toBeUndefined();
   });
 
-  test("should get type", () => {
-    expect(keyPair.type).toBe("type");
+  test("should get json", () => {
+    expect(keyPair.toJSON()).toMatchSnapshot();
   });
 });
