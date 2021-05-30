@@ -1,6 +1,9 @@
 import Joi from "joi";
 import { Algorithm, KeyPairEvent, KeyType, NamedCurve } from "../enum";
-import { orderBy } from "lodash";
+import { IJoseData, IJwk, IKeyJwk } from "../types";
+import { JOI_KEY_ALGORITHM, JOI_KEY_ALGORITHMS, JOI_KEY_NAMED_CURVE, JOI_KEY_TYPE } from "../constant";
+import { decodeKeys, encodeKeys } from "../util";
+import { includes, orderBy } from "lodash";
 import {
   EntityBase,
   EntityCreationError,
@@ -9,7 +12,6 @@ import {
   IEntityOptions,
   JOI_ENTITY_BASE,
 } from "@lindorm-io/entity";
-import { JOI_KEY_ALGORITHM, JOI_KEY_ALGORITHMS, JOI_KEY_NAMED_CURVE, JOI_KEY_TYPE } from "../constant";
 
 export interface IKeyPairAttributes extends IEntityAttributes {
   algorithms: Array<Algorithm>;
@@ -95,6 +97,10 @@ export class KeyPair extends EntityBase<IKeyPairAttributes> implements IEntity<I
     return this._preferredAlgorithm;
   }
   public set preferredAlgorithm(preferredAlgorithm: Algorithm) {
+    if (!includes(this.algorithms, preferredAlgorithm)) {
+      throw new Error("Invalid preferredAlgorithm");
+    }
+
     this._preferredAlgorithm = preferredAlgorithm;
     this.addEvent(KeyPairEvent.PREFERRED_ALGORITHM_CHANGED, { preferredAlgorithm: this._preferredAlgorithm });
   }
@@ -130,5 +136,42 @@ export class KeyPair extends EntityBase<IKeyPairAttributes> implements IEntity<I
       publicKey: this.publicKey,
       type: this.type,
     };
+  }
+
+  public toJWK(exposePrivateKey = false): IJwk {
+    const data: IKeyJwk = encodeKeys({
+      exposePrivateKey,
+      namedCurve: this.namedCurve,
+      privateKey: this.privateKey,
+      publicKey: this.publicKey,
+      type: this.type,
+    });
+
+    return {
+      alg: this.preferredAlgorithm,
+      created: this.created.getTime(),
+      crv: this.namedCurve ? this.namedCurve : undefined,
+      expires: this.expires ? this.expires.getTime() : undefined,
+      key_ops: ["sign", "verify"],
+      kid: this.id,
+      kty: this.type,
+      use: "sig",
+      ...data,
+    };
+  }
+
+  public static fromJWK(jwk: IJwk): KeyPair {
+    const data: IJoseData = decodeKeys(jwk);
+
+    return new KeyPair({
+      id: jwk.kid,
+      algorithms: [jwk.alg as Algorithm],
+      created: jwk.created ? new Date(jwk.created) : undefined,
+      expires: jwk.expires ? new Date(jwk.expires) : undefined,
+      namedCurve: jwk.crv ? (jwk.crv as NamedCurve) : undefined,
+      preferredAlgorithm: jwk.alg as Algorithm,
+      type: jwk.kty as KeyType,
+      ...data,
+    });
   }
 }

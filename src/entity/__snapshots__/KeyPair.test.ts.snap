@@ -1,5 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`KeyPair.ts should convert to JWK 1`] = `
+Object {
+  "alg": "ES512",
+  "created": 1577865600000,
+  "crv": "crv",
+  "d": "d",
+  "dp": "dp",
+  "dq": "dq",
+  "e": "e",
+  "expires": 1577865600000,
+  "key_ops": Array [
+    "sign",
+    "verify",
+  ],
+  "kid": "259ff47d-e334-4784-a478-04bf6d6b5d84",
+  "kty": "EC",
+  "n": "n",
+  "p": "p",
+  "q": "q",
+  "qi": "qi",
+  "use": "sig",
+  "x": "x",
+  "y": "y",
+}
+`;
+
 exports[`KeyPair.ts should create 1`] = `
 Array [
   Object {
@@ -8,6 +34,8 @@ Array [
     "payload": Object {
       "algorithms": Array [
         "ES512",
+        "ES384",
+        "ES256",
       ],
       "allowed": true,
       "created": 2020-01-01T08:00:00.000Z,
@@ -19,7 +47,7 @@ Array [
       "preferredAlgorithm": "ES512",
       "privateKey": "privateKey",
       "publicKey": "publicKey",
-      "type": "ec",
+      "type": "EC",
       "updated": 2020-01-01T08:00:00.000Z,
       "version": 0,
     },
@@ -27,10 +55,33 @@ Array [
 ]
 `;
 
+exports[`KeyPair.ts should create a new KeyPair from JWK 1`] = `
+Object {
+  "algorithms": Array [
+    "ES512",
+  ],
+  "allowed": true,
+  "created": 2020-01-01T08:00:00.000Z,
+  "events": Array [],
+  "expires": null,
+  "id": "391a4598-5dc6-4e3c-b1d9-a971ac55b3bb",
+  "namedCurve": "P-521",
+  "passphrase": null,
+  "preferredAlgorithm": "ES512",
+  "privateKey": "privateKey",
+  "publicKey": "publicKey",
+  "type": "EC",
+  "updated": 2020-01-01T08:00:00.000Z,
+  "version": 0,
+}
+`;
+
 exports[`KeyPair.ts should get json 1`] = `
 Object {
   "algorithms": Array [
     "ES512",
+    "ES384",
+    "ES256",
   ],
   "allowed": true,
   "created": 2020-01-01T08:00:00.000Z,
@@ -42,7 +93,7 @@ Object {
   "preferredAlgorithm": "ES512",
   "privateKey": "privateKey",
   "publicKey": "publicKey",
-  "type": "ec",
+  "type": "EC",
   "updated": 2020-01-01T08:00:00.000Z,
   "version": 0,
 }
@@ -72,10 +123,24 @@ Array [
 ]
 `;
 
+exports[`KeyPair.ts should get/set preferredAlgorithm 1`] = `
+Array [
+  Object {
+    "date": 2020-01-01T08:00:00.000Z,
+    "name": "key_pair_preferred_algorithm_changed",
+    "payload": Object {
+      "preferredAlgorithm": "ES384",
+    },
+  },
+]
+`;
+
 exports[`KeyPair.ts should have all data 1`] = `
 Object {
   "algorithms": Array [
     "ES512",
+    "ES384",
+    "ES256",
   ],
   "allowed": true,
   "created": 2020-01-01T08:00:00.000Z,
@@ -87,7 +152,7 @@ Object {
   "preferredAlgorithm": "ES512",
   "privateKey": "privateKey",
   "publicKey": "publicKey",
-  "type": "ec",
+  "type": "EC",
   "updated": 2020-01-01T08:00:00.000Z,
   "version": 0,
 }
@@ -109,7 +174,7 @@ Object {
   "preferredAlgorithm": "RS384",
   "privateKey": null,
   "publicKey": "publicKey",
-  "type": "rsa",
+  "type": "RSA",
   "updated": 2020-01-01T08:00:00.000Z,
   "version": 0,
 }
