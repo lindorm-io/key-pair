@@ -28,11 +28,11 @@ export interface IKeyPairAttributes extends IEntityAttributes {
 export interface IKeyPairOptions extends IEntityOptions {
   algorithms: Array<Algorithm>;
   allowed?: boolean;
-  expires?: Date;
-  namedCurve?: NamedCurve;
-  passphrase?: string;
+  expires?: Date | null;
+  namedCurve?: NamedCurve | null;
+  passphrase?: string | null;
   preferredAlgorithm?: Algorithm;
-  privateKey?: string;
+  privateKey?: string | null;
   publicKey: string;
   type: KeyType;
 }
