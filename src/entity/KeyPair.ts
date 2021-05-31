@@ -111,7 +111,8 @@ export class KeyPair extends EntityBase<IKeyPairAttributes> implements IEntity<I
       throw new EntityCreationError(this.constructor.name);
     }
 
-    this.addEvent(KeyPairEvent.CREATED, this.toJSON());
+    const { events, ...rest } = this.toJSON();
+    this.addEvent(KeyPairEvent.CREATED, rest);
   }
 
   public getKey(): string {

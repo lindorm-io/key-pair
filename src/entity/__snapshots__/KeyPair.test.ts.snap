@@ -39,7 +39,6 @@ Array [
       ],
       "allowed": true,
       "created": 2020-01-01T08:00:00.000Z,
-      "events": [Circular],
       "expires": 2020-01-01T08:00:00.000Z,
       "id": "259ff47d-e334-4784-a478-04bf6d6b5d84",
       "namedCurve": "P-521",
