@@ -3,14 +3,19 @@ import { KeyPair } from "../entity";
 import { filter, find, orderBy } from "lodash";
 import { isAfter, isBefore } from "date-fns";
 
-export interface IKeystoreOptions {
+interface Options {
   keys: Array<KeyPair>;
+}
+
+interface TTL {
+  seconds: number;
+  milliseconds: number;
 }
 
 export class Keystore {
   private readonly keys: Array<KeyPair>;
 
-  public constructor(options: IKeystoreOptions) {
+  public constructor(options: Options) {
     const keys = options.keys || [];
     this.keys = orderBy(keys, ["created", "expires"], ["desc", "asc"]);
   }
@@ -55,6 +60,18 @@ export class Keystore {
     }
 
     return key;
+  }
+
+  public static getTTL(key: KeyPair): TTL | undefined {
+    if (Keystore.isKeyExpired(key)) return undefined;
+    if (!key.expires) return undefined;
+
+    const ttl = key.expires.getTime() - new Date().getTime();
+
+    return {
+      seconds: Math.round(ttl / 1000),
+      milliseconds: ttl,
+    };
   }
 
   public static isKeyUsable(key: KeyPair): boolean {

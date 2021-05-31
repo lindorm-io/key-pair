@@ -102,6 +102,21 @@ describe("Keystore.ts", () => {
     expect(keystore.getKey("73b5f592-15db-40a1-8b09-ce835dc2afae")).toStrictEqual(key2);
   });
 
+  test("should return TTL for soon to be expired key", () => {
+    expect(Keystore.getTTL(key2)).toStrictEqual({
+      seconds: 82800,
+      milliseconds: 82800000,
+    });
+  });
+
+  test("should return undefined for expired key", () => {
+    expect(Keystore.getTTL(key1)).toBeUndefined();
+  });
+
+  test("should return undefined for key without expiry", () => {
+    expect(Keystore.getTTL(key4)).toBeUndefined();
+  });
+
   test("should return usable status of key", () => {
     expect(Keystore.isKeyUsable(key1)).toBe(false);
     expect(Keystore.isKeyUsable(key2)).toBe(true);
