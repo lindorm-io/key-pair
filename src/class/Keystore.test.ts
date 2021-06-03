@@ -82,6 +82,10 @@ describe("Keystore.ts", () => {
 
   const keystore = new Keystore({ keys: [key1, key2, key3, key4, key5] });
 
+  test("should throw if initialised without keys", () => {
+    expect(() => new Keystore({ keys: [] })).toThrow(Error);
+  });
+
   test("should return all keys that can be used", () => {
     expect(keystore.getUsableKeys()).toStrictEqual([key4, key3, key2]);
   });

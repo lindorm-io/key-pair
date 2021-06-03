@@ -16,7 +16,12 @@ export class Keystore {
   private readonly keys: Array<KeyPair>;
 
   public constructor(options: Options) {
-    const keys = options.keys || [];
+    const keys = options.keys;
+
+    if (!keys.length) {
+      throw new Error("Keystore was initialised without keys");
+    }
+
     this.keys = orderBy(keys, ["created", "expires"], ["desc", "asc"]);
   }
 
