@@ -1,19 +1,19 @@
 import Joi from "joi";
 import { Algorithm, KeyPairEvent, KeyType, NamedCurve } from "../enum";
-import { IJoseData, IJwk, IKeyJwk } from "../types";
+import { JoseData, JWK, KeyJWK } from "../types";
 import { JOI_KEY_ALGORITHM, JOI_KEY_ALGORITHMS, JOI_KEY_NAMED_CURVE, JOI_KEY_TYPE } from "../constant";
 import { decodeKeys, encodeKeys } from "../util";
 import { includes, orderBy } from "lodash";
 import {
+  EntityAttributes,
   EntityBase,
   EntityCreationError,
+  EntityOptions,
   IEntity,
-  IEntityAttributes,
-  IEntityOptions,
   JOI_ENTITY_BASE,
 } from "@lindorm-io/entity";
 
-export interface IKeyPairAttributes extends IEntityAttributes {
+export interface KeyPairAttributes extends EntityAttributes {
   algorithms: Array<Algorithm>;
   allowed: boolean;
   expires: Date | null;
@@ -25,7 +25,7 @@ export interface IKeyPairAttributes extends IEntityAttributes {
   type: KeyType;
 }
 
-export interface IKeyPairOptions extends IEntityOptions {
+export interface KeyPairOptions extends EntityOptions {
   algorithms: Array<Algorithm>;
   allowed?: boolean;
   expires?: Date | null;
@@ -51,7 +51,7 @@ const schema = Joi.object({
   type: JOI_KEY_TYPE.required(),
 });
 
-export class KeyPair extends EntityBase<IKeyPairAttributes> implements IEntity<IKeyPairAttributes> {
+export class KeyPair extends EntityBase<KeyPairAttributes> implements IEntity<KeyPairAttributes> {
   public readonly algorithms: Array<Algorithm>;
   public readonly namedCurve: NamedCurve | null;
   public readonly passphrase: string | null;
@@ -62,12 +62,13 @@ export class KeyPair extends EntityBase<IKeyPairAttributes> implements IEntity<I
   private _expires: Date | null;
   private _preferredAlgorithm: Algorithm;
 
-  public constructor(options: IKeyPairOptions) {
+  public constructor(options: KeyPairOptions) {
     super(options);
 
     this._allowed = options.allowed !== false;
     this._expires = options.expires || null;
-    this._preferredAlgorithm = options.preferredAlgorithm || orderBy(options.algorithms, [(item) => item], ["desc"])[0];
+    this._preferredAlgorithm =
+      options.preferredAlgorithm || orderBy(options.algorithms, [(item): Algorithm => item], ["desc"])[0];
 
     this.algorithms = options.algorithms;
     this.namedCurve = options.namedCurve || null;
@@ -123,7 +124,7 @@ export class KeyPair extends EntityBase<IKeyPairAttributes> implements IEntity<I
     await schema.validateAsync(this.toJSON());
   }
 
-  public toJSON(): IKeyPairAttributes {
+  public toJSON(): KeyPairAttributes {
     return {
       ...this.defaultJSON(),
 
@@ -139,8 +140,8 @@ export class KeyPair extends EntityBase<IKeyPairAttributes> implements IEntity<I
     };
   }
 
-  public toJWK(exposePrivateKey = false): IJwk {
-    const data: IKeyJwk = encodeKeys({
+  public toJWK(exposePrivateKey = false): JWK {
+    const data: KeyJWK = encodeKeys({
       exposePrivateKey,
       namedCurve: this.namedCurve,
       privateKey: this.privateKey,
@@ -161,8 +162,8 @@ export class KeyPair extends EntityBase<IKeyPairAttributes> implements IEntity<I
     };
   }
 
-  public static fromJWK(jwk: IJwk): KeyPair {
-    const data: IJoseData = decodeKeys(jwk);
+  public static fromJWK(jwk: JWK): KeyPair {
+    const data: JoseData = decodeKeys(jwk);
 
     return new KeyPair({
       id: jwk.kid,

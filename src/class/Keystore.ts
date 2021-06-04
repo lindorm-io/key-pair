@@ -1,4 +1,4 @@
-import { IJwk } from "../types";
+import { JWK } from "../types";
 import { KeyPair } from "../entity";
 import { filter, find, orderBy } from "lodash";
 import { isAfter, isBefore } from "date-fns";
@@ -33,8 +33,8 @@ export class Keystore {
     return this.keys;
   }
 
-  public getJWKS(exposePrivateKeys = false): Array<IJwk> {
-    const keys: Array<IJwk> = [];
+  public getJWKS(exposePrivateKeys = false): Array<JWK> {
+    const keys: Array<JWK> = [];
 
     for (const keyPair of this.getUsableKeys()) {
       keys.push(keyPair.toJWK(exposePrivateKeys));

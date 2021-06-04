@@ -1,12 +1,10 @@
 import { Asn1SequenceDecoder } from "./Asn1SequenceDecoder";
 import { Asn1SequenceEncoder } from "./Asn1SequenceEncoder";
-import { IJoseData, IJwkRSA } from "../../types";
+import { JoseData, RivestJWK } from "../../types";
 import { createPrivateKey, createPublicKey } from "crypto";
 
-export const encodeRSA = ({ privateKey, publicKey }: IJoseData): IJwkRSA => {
-  if (!publicKey) {
-    throw new Error(`Invalid publicKey [ ${publicKey} ]`);
-  }
+export const encodeRSA = ({ privateKey, publicKey }: JoseData): RivestJWK => {
+  if (!publicKey) throw new Error(`Invalid publicKey [ ${publicKey} ]`);
 
   if (!privateKey) {
     const key = createPublicKey({
@@ -65,7 +63,7 @@ export const encodeRSA = ({ privateKey, publicKey }: IJoseData): IJwkRSA => {
   throw new Error("publicKey is required");
 };
 
-export const decodeRSA = ({ d, dp, dq, e, n, p, q, qi }: IJwkRSA): IJoseData => {
+export const decodeRSA = ({ d, dp, dq, e, n, p, q, qi }: RivestJWK): JoseData => {
   const isPrivate = d !== undefined;
 
   const enc = new Asn1SequenceEncoder();
@@ -87,15 +85,22 @@ export const decodeRSA = ({ d, dp, dq, e, n, p, q, qi }: IJwkRSA): IJoseData => 
     return { publicKey };
   }
 
+  if (!d) throw new Error("JWK key [ d ] invalid (empty)");
+  if (!p) throw new Error("JWK key [ p ] invalid (empty)");
+  if (!q) throw new Error("JWK key [ q ] invalid (empty)");
+  if (!dp) throw new Error("JWK key [ dp ] invalid (empty)");
+  if (!dq) throw new Error("JWK key [ dq ] invalid (empty)");
+  if (!qi) throw new Error("JWK key [ qi ] invalid (empty)");
+
   enc.zero();
   enc.unsignedInteger(modulus);
   enc.unsignedInteger(exponent);
-  enc.unsignedInteger(Buffer.from(d!, "base64"));
-  enc.unsignedInteger(Buffer.from(p!, "base64"));
-  enc.unsignedInteger(Buffer.from(q!, "base64"));
-  enc.unsignedInteger(Buffer.from(dp!, "base64"));
-  enc.unsignedInteger(Buffer.from(dq!, "base64"));
-  enc.unsignedInteger(Buffer.from(qi!, "base64"));
+  enc.unsignedInteger(Buffer.from(d, "base64"));
+  enc.unsignedInteger(Buffer.from(p, "base64"));
+  enc.unsignedInteger(Buffer.from(q, "base64"));
+  enc.unsignedInteger(Buffer.from(dp, "base64"));
+  enc.unsignedInteger(Buffer.from(dq, "base64"));
+  enc.unsignedInteger(Buffer.from(qi, "base64"));
 
   const der = enc.end();
   const key = createPrivateKey({

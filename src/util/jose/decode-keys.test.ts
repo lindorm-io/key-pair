@@ -1,4 +1,4 @@
-import { IJwk } from "../../types";
+import { JWK } from "../../types";
 import { decodeKeys } from "./decode-keys";
 
 describe("decodeKeys", () => {
@@ -7,7 +7,7 @@ describe("decodeKeys", () => {
     const x = "AAsJtfdgSmaSxsm1swOSCodmSxeEwxQ1vcdkLVySpZAGLcGZYNIvJ9cUtQGQc9S3CDvjkR0bkrxq4HLYqC4Kwodz";
     const y = "AJcSMpJWmZ97gv03gXIIbH57p01RN6CpVcUTXW+s4NxnQ6UDhuWKeyBdB7F14rXQZQKhvluoGpjvv6ON4bdk2wuW";
 
-    const jwk: IJwk = {
+    const jwk: JWK = {
       alg: "ES512",
       crv: "P-521",
       key_ops: [],
@@ -53,7 +53,7 @@ describe("decodeKeys", () => {
     const q = "yFZiSv8BqXQHEPPo/S8G4S+01Ie3R7/kOeqcCpiuR9avpFLArpypE54ciONUPgHLrhx98qbL6O+GIP8dac6LHQ==";
     const qi = "DNtq71ngu8GSu7iFTbVJQNQQJ/SMOrkRbEP8ugj34wH30FY5DYmKlKLvxlp1eolH/sE2GhzvJd1avuYtA+YQVw==";
 
-    const jwk: IJwk = {
+    const jwk: JWK = {
       alg: "RS512",
       key_ops: [],
       kid: "e2ed020f-b646-45c6-b425-feb32908daa0",

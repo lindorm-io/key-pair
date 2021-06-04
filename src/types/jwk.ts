@@ -1,6 +1,6 @@
 import { KeyType, NamedCurve } from "../enum";
 
-export interface IDefaultJwk {
+export interface DefaultJWK {
   alg: string;
   created?: number;
   crv?: string;
@@ -11,14 +11,14 @@ export interface IDefaultJwk {
   use: string;
 }
 
-export interface IJwkEC {
+export interface EllipticalJWK {
   d?: string;
   x: string;
   y: string;
   crv: string;
 }
 
-export interface IJwkRSA {
+export interface RivestJWK {
   d?: string;
   dp?: string;
   dq?: string;
@@ -29,19 +29,19 @@ export interface IJwkRSA {
   qi?: string;
 }
 
-export type IKeyJwk = IJwkEC | IJwkRSA;
-export type IJwk = IDefaultJwk & IKeyJwk;
+export type KeyJWK = EllipticalJWK | RivestJWK;
+export type JWK = DefaultJWK & KeyJWK;
 
-export interface IJoseData {
+export interface JoseData {
   privateKey?: string;
   publicKey: string;
 }
 
-export interface IJoseEcData extends IJoseData {
+export interface JoseDataEC extends JoseData {
   crv: string;
 }
 
-export interface IEncodeKeysOptions {
+export interface EncodeKeysOptions {
   exposePrivateKey: boolean;
   namedCurve?: NamedCurve | null;
   privateKey?: string | null;

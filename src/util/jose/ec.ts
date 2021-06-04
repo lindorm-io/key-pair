@@ -1,5 +1,5 @@
 import { Asn1SequenceEncoder } from "./Asn1SequenceEncoder";
-import { IJoseEcData, IJoseData, IJwkEC } from "../../types";
+import { JoseDataEC, JoseData, EllipticalJWK } from "../../types";
 import { createPrivateKey, createPublicKey } from "crypto";
 
 const getEncodeLength = (namedCurve: string): { len: number; offset: number; correction: number } => {
@@ -30,13 +30,9 @@ const getEncodeLength = (namedCurve: string): { len: number; offset: number; cor
   }
 };
 
-export const encodeEC = ({ crv, privateKey, publicKey }: IJoseEcData): IJwkEC => {
-  if (!crv) {
-    throw new Error(`Invalid crv [ ${crv} ]`);
-  }
-  if (!publicKey) {
-    throw new Error(`Invalid publicKey [ ${publicKey} ]`);
-  }
+export const encodeEC = ({ crv, privateKey, publicKey }: JoseDataEC): EllipticalJWK => {
+  if (!crv) throw new Error(`Invalid crv [ ${crv} ]`);
+  if (!publicKey) throw new Error(`Invalid publicKey [ ${publicKey} ]`);
 
   const { len, offset: originalOffset, correction } = getEncodeLength(crv);
   let offset = originalOffset;
@@ -69,11 +65,14 @@ export const encodeEC = ({ crv, privateKey, publicKey }: IJoseEcData): IJwkEC =>
   throw new Error("Unexpected Error");
 };
 
-export const decodeEC = ({ crv, d, x, y }: IJwkEC): IJoseData => {
+export const decodeEC = ({ crv, d, x, y }: EllipticalJWK): JoseData => {
   const isPrivate = d !== undefined;
 
+  if (!x) throw new Error("JWK key [ x ] invalid (empty)");
+  if (!y) throw new Error("JWK key [ y ] invalid (empty)");
+
   const enc = new Asn1SequenceEncoder();
-  const pub = Buffer.concat([Buffer.alloc(1, 4), Buffer.from(x!, "base64"), Buffer.from(y!, "base64")]);
+  const pub = Buffer.concat([Buffer.alloc(1, 4), Buffer.from(x, "base64"), Buffer.from(y, "base64")]);
 
   if (!isPrivate) {
     const enc$1 = new Asn1SequenceEncoder();
@@ -92,13 +91,15 @@ export const decodeEC = ({ crv, d, x, y }: IJwkEC): IJoseData => {
 
   enc.zero();
 
+  if (!d) throw new Error("JWK key [ d ] invalid (empty)");
+
   const enc$1 = new Asn1SequenceEncoder();
   enc$1.oidFor("ecPublicKey");
   enc$1.oidFor(crv);
   enc.add(enc$1.end());
   const enc$2 = new Asn1SequenceEncoder();
   enc$2.one();
-  enc$2.octStr(Buffer.from(d!, "base64"));
+  enc$2.octStr(Buffer.from(d, "base64"));
   const enc$3 = new Asn1SequenceEncoder();
   enc$3.bitStr(pub);
   const f2 = enc$3.end(Buffer.from([0xa1]));
