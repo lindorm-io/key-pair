@@ -29,6 +29,7 @@ export class Keystore {
     const keys: Array<JWK> = [];
 
     for (const keyPair of this.getKeys()) {
+      if (keyPair.external) continue;
       keys.push(keyPair.toJWK(exposePrivateKeys));
     }
 
