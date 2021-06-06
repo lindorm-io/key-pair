@@ -3,7 +3,7 @@ import { Algorithm, KeyPairEvent, KeyType, NamedCurve } from "../enum";
 import { JoseData, JWK, KeyJWK } from "../types";
 import { JOI_KEY_ALGORITHM, JOI_KEY_ALGORITHMS, JOI_KEY_NAMED_CURVE, JOI_KEY_TYPE } from "../constant";
 import { decodeKeys, encodeKeys } from "../util";
-import { includes, orderBy } from "lodash";
+import { includes, isString, orderBy } from "lodash";
 import {
   EntityAttributes,
   EntityBase,
@@ -17,6 +17,7 @@ export interface KeyPairAttributes extends EntityAttributes {
   algorithms: Array<Algorithm>;
   allowed: boolean;
   expires: Date | null;
+  external: boolean;
   namedCurve: NamedCurve | null;
   passphrase: string | null;
   preferredAlgorithm: Algorithm;
@@ -29,6 +30,7 @@ export interface KeyPairOptions extends EntityOptions {
   algorithms: Array<Algorithm>;
   allowed?: boolean;
   expires?: Date | null;
+  external?: boolean;
   namedCurve?: NamedCurve | null;
   passphrase?: string | null;
   preferredAlgorithm?: Algorithm;
@@ -43,6 +45,7 @@ const schema = Joi.object({
   algorithms: JOI_KEY_ALGORITHMS.required(),
   allowed: Joi.boolean().required(),
   expires: Joi.date().allow(null).required(),
+  external: Joi.boolean().required(),
   namedCurve: JOI_KEY_NAMED_CURVE.allow(null).required(),
   passphrase: Joi.string().allow(null).required(),
   preferredAlgorithm: JOI_KEY_ALGORITHM.required(),
@@ -53,6 +56,7 @@ const schema = Joi.object({
 
 export class KeyPair extends EntityBase<KeyPairAttributes> implements IEntity<KeyPairAttributes> {
   public readonly algorithms: Array<Algorithm>;
+  public readonly external: boolean;
   public readonly namedCurve: NamedCurve | null;
   public readonly passphrase: string | null;
   public readonly privateKey: string | null;
@@ -71,6 +75,7 @@ export class KeyPair extends EntityBase<KeyPairAttributes> implements IEntity<Ke
       options.preferredAlgorithm || orderBy(options.algorithms, [(item): Algorithm => item], ["desc"])[0];
 
     this.algorithms = options.algorithms;
+    this.external = options.external === true;
     this.namedCurve = options.namedCurve || null;
     this.passphrase = options.passphrase || null;
     this.privateKey = options.privateKey || null;
@@ -131,6 +136,7 @@ export class KeyPair extends EntityBase<KeyPairAttributes> implements IEntity<Ke
       algorithms: this.algorithms,
       allowed: this.allowed,
       expires: this.expires,
+      external: this.external,
       namedCurve: this.namedCurve,
       passphrase: this.passphrase,
       preferredAlgorithm: this.preferredAlgorithm,
@@ -149,12 +155,25 @@ export class KeyPair extends EntityBase<KeyPairAttributes> implements IEntity<Ke
       type: this.type,
     });
 
+    const keyOps = ["verify"];
+
+    if (isString(this.privateKey)) {
+      keyOps.push("sign");
+
+      if (this.type === KeyType.RSA && (this.passphrase?.length || 0) < 1) {
+        keyOps.push("encrypt");
+      }
+    }
+    if (this.type === KeyType.RSA) {
+      keyOps.push("decrypt");
+    }
+
     return {
       alg: this.preferredAlgorithm,
       created: this.created.getTime(),
       crv: this.namedCurve ? this.namedCurve : undefined,
       expires: this.expires ? this.expires.getTime() : undefined,
-      key_ops: ["sign", "verify"],
+      key_ops: keyOps.sort(),
       kid: this.id,
       kty: this.type,
       use: "sig",
@@ -170,6 +189,7 @@ export class KeyPair extends EntityBase<KeyPairAttributes> implements IEntity<Ke
       algorithms: [jwk.alg as Algorithm],
       created: jwk.created ? new Date(jwk.created) : undefined,
       expires: jwk.expires ? new Date(jwk.expires) : undefined,
+      external: true,
       namedCurve: jwk.crv ? (jwk.crv as NamedCurve) : undefined,
       preferredAlgorithm: jwk.alg as Algorithm,
       type: jwk.kty as KeyType,

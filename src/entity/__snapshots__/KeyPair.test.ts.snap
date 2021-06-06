@@ -1,31 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`KeyPair.ts should convert to JWK 1`] = `
-Object {
-  "alg": "ES512",
-  "created": 1577865600000,
-  "crv": "crv",
-  "d": "d",
-  "dp": "dp",
-  "dq": "dq",
-  "e": "e",
-  "expires": 1577865600000,
-  "key_ops": Array [
-    "sign",
-    "verify",
-  ],
-  "kid": "259ff47d-e334-4784-a478-04bf6d6b5d84",
-  "kty": "EC",
-  "n": "n",
-  "p": "p",
-  "q": "q",
-  "qi": "qi",
-  "use": "sig",
-  "x": "x",
-  "y": "y",
-}
-`;
-
 exports[`KeyPair.ts should create 1`] = `
 Array [
   Object {
@@ -40,6 +14,7 @@ Array [
       "allowed": true,
       "created": 2020-01-01T08:00:00.000Z,
       "expires": 2020-01-01T08:00:00.000Z,
+      "external": false,
       "id": "259ff47d-e334-4784-a478-04bf6d6b5d84",
       "namedCurve": "P-521",
       "passphrase": null,
@@ -63,6 +38,7 @@ Object {
   "created": 2020-01-01T08:00:00.000Z,
   "events": Array [],
   "expires": null,
+  "external": true,
   "id": "391a4598-5dc6-4e3c-b1d9-a971ac55b3bb",
   "namedCurve": "P-521",
   "passphrase": null,
@@ -86,6 +62,7 @@ Object {
   "created": 2020-01-01T08:00:00.000Z,
   "events": Array [],
   "expires": 2020-01-01T08:00:00.000Z,
+  "external": false,
   "id": "259ff47d-e334-4784-a478-04bf6d6b5d84",
   "namedCurve": "P-521",
   "passphrase": null,
@@ -145,6 +122,7 @@ Object {
   "created": 2020-01-01T08:00:00.000Z,
   "events": Array [],
   "expires": 2020-01-01T08:00:00.000Z,
+  "external": false,
   "id": "259ff47d-e334-4784-a478-04bf6d6b5d84",
   "namedCurve": "P-521",
   "passphrase": null,
@@ -167,6 +145,7 @@ Object {
   "created": 2020-01-01T08:00:00.000Z,
   "events": Array [],
   "expires": null,
+  "external": false,
   "id": "02dc19eb-2b8b-4a83-a0c0-9ac2b306bb9a",
   "namedCurve": null,
   "passphrase": null,
@@ -176,5 +155,58 @@ Object {
   "type": "RSA",
   "updated": 2020-01-01T08:00:00.000Z,
   "version": 0,
+}
+`;
+
+exports[`KeyPair.ts toJWK should convert private RSA key with passphrase to JWK 1`] = `
+Object {
+  "alg": "RS512",
+  "created": 1578099600000,
+  "crv": "crv",
+  "d": "d",
+  "dp": "dp",
+  "dq": "dq",
+  "e": "e",
+  "expires": undefined,
+  "key_ops": Array [
+    "decrypt",
+    "sign",
+    "verify",
+  ],
+  "kid": "privateKeyRSAWithPasscode",
+  "kty": "RSA",
+  "n": "n",
+  "p": "p",
+  "q": "q",
+  "qi": "qi",
+  "use": "sig",
+  "x": "x",
+  "y": "y",
+}
+`;
+
+exports[`KeyPair.ts toJWK should convert private key to JWK 1`] = `
+Object {
+  "alg": "ES512",
+  "created": 1577926800000,
+  "crv": "crv",
+  "d": "d",
+  "dp": "dp",
+  "dq": "dq",
+  "e": "e",
+  "expires": undefined,
+  "key_ops": Array [
+    "sign",
+    "verify",
+  ],
+  "kid": "privateKey",
+  "kty": "EC",
+  "n": "n",
+  "p": "p",
+  "q": "q",
+  "qi": "qi",
+  "use": "sig",
+  "x": "x",
+  "y": "y",
 }
 `;

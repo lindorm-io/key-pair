@@ -1,6 +1,7 @@
 import MockDate from "mockdate";
 import { KeyPair } from "./KeyPair";
 import { Algorithm, KeyType, NamedCurve } from "../enum";
+import { privateKey, privateKeyRSAPassphrase } from "../test";
 
 MockDate.set("2020-01-01T08:00:00.000Z");
 
@@ -34,7 +35,6 @@ describe("KeyPair.ts", () => {
       allowed: true,
       expires: new Date("2020-01-01T08:00:00.000Z"),
       namedCurve: NamedCurve.P521,
-      passphrase: "",
       privateKey: "privateKey",
       publicKey: "publicKey",
       type: KeyType.EC,
@@ -103,8 +103,14 @@ describe("KeyPair.ts", () => {
     expect(keyPair.toJSON()).toMatchSnapshot();
   });
 
-  test("should convert to JWK", () => {
-    expect(keyPair.toJWK(true)).toMatchSnapshot();
+  describe("toJWK", () => {
+    test("should convert private key to JWK", () => {
+      expect(privateKey.toJWK(true)).toMatchSnapshot();
+    });
+
+    test("should convert private RSA key with passphrase to JWK", () => {
+      expect(privateKeyRSAPassphrase.toJWK(true)).toMatchSnapshot();
+    });
   });
 
   test("should create a new KeyPair from JWK", () => {
