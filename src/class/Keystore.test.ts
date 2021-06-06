@@ -13,6 +13,8 @@ import {
   publicKeyExpired,
   publicKeyExpires,
   publicKeyNotAllowed,
+  privateKeyCopy,
+  publicKeyCopy,
 } from "../test";
 
 MockDate.set("2021-02-01T08:00:00.000Z");
@@ -42,12 +44,14 @@ describe("Keystore.ts", () => {
   const keystore = new Keystore({
     keys: [
       privateKey,
+      privateKeyCopy,
       privateKeyExternal,
       privateKeyRSA,
       privateKeyExpired,
       privateKeyExpires,
       privateKeyNotAllowed,
       publicKey,
+      publicKeyCopy,
       publicKeyExternal,
       publicKeyRSA,
       publicKeyExpired,
@@ -87,7 +91,7 @@ describe("Keystore.ts", () => {
   });
 
   describe("getKeys", () => {
-    test("should return all keys that can be used", () => {
+    test("should return all unique keys that can be used", () => {
       expect(keystore.getKeys()).toStrictEqual([
         publicKeyExpires,
         publicKeyRSA,

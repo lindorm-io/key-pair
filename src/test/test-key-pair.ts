@@ -11,6 +11,16 @@ export const privateKey = new KeyPair({
   type: KeyType.EC,
 });
 
+export const privateKeyCopy = new KeyPair({
+  id: "privateKey",
+  algorithms: [Algorithm.ES512],
+  created: new Date("2020-01-02T01:00:00.000Z"),
+  namedCurve: NamedCurve.P521,
+  privateKey: "privateKey-private-key",
+  publicKey: "privateKey-public-key",
+  type: KeyType.EC,
+});
+
 export const privateKeyExternal = new KeyPair({
   id: "privateKeyExternal",
   algorithms: [Algorithm.ES384],
@@ -75,6 +85,15 @@ export const privateKeyNotAllowed = new KeyPair({
 });
 
 export const publicKey = new KeyPair({
+  id: "publicKey",
+  algorithms: [Algorithm.ES512],
+  created: new Date("2020-01-08T01:00:00.000Z"),
+  namedCurve: NamedCurve.P521,
+  publicKey: "publicKey-public-key",
+  type: KeyType.EC,
+});
+
+export const publicKeyCopy = new KeyPair({
   id: "publicKey",
   algorithms: [Algorithm.ES512],
   created: new Date("2020-01-08T01:00:00.000Z"),

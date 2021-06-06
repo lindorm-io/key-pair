@@ -1,6 +1,6 @@
 import { JWK } from "../types";
 import { KeyPair } from "../entity";
-import { filter, find, orderBy } from "lodash";
+import { filter, find, orderBy, uniqBy } from "lodash";
 import { isKeyExpired, isKeyPrivate, isKeyUsable } from "../util";
 
 interface Options {
@@ -46,7 +46,7 @@ export class Keystore {
   }
 
   public getKeys(): Array<KeyPair> {
-    return filter(this.keys, isKeyUsable);
+    return filter(uniqBy(this.keys, "id"), isKeyUsable);
   }
 
   public getPrivateKeys(): Array<KeyPair> {
