@@ -1,4 +1,4 @@
-import { KeyType, NamedCurve } from "../../enum";
+import { KeyType, NamedCurve } from "../../../enum";
 import { encodeKeys } from "./encode-keys";
 
 describe("encodeKeys", () => {

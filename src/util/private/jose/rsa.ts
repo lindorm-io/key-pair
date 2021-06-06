@@ -1,6 +1,6 @@
 import { Asn1SequenceDecoder } from "./Asn1SequenceDecoder";
 import { Asn1SequenceEncoder } from "./Asn1SequenceEncoder";
-import { JoseData, RivestJWK } from "../../types";
+import { JoseData, RivestJWK } from "../../../types";
 import { createPrivateKey, createPublicKey } from "crypto";
 
 export const encodeRSA = ({ privateKey, publicKey }: JoseData): RivestJWK => {

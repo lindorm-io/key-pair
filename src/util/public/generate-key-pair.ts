@@ -1,5 +1,5 @@
-import { Algorithm, KeyType, NamedCurve } from "../enum";
-import { KeyPair } from "../entity";
+import { Algorithm, KeyType, NamedCurve } from "../../enum";
+import { KeyPair } from "../../entity";
 import { generateEcKeys } from "./generate-ec-keys";
 import { generateRsaKeys } from "./generate-rsa-keys";
 

@@ -1,4 +1,4 @@
-import { Algorithm, KeyType, NamedCurve } from "../enum";
+import { Algorithm, KeyType, NamedCurve } from "../../enum";
 import { generateKeyPair } from "crypto";
 
 interface IOptions {

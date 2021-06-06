@@ -1,8 +1,8 @@
 import { generateEcKeys as _generateEcKeys } from "./generate-ec-keys";
 import { generateRsaKeys as _generateRsaKeys } from "./generate-rsa-keys";
 import { generateKeyPair } from "./generate-key-pair";
-import { KeyType, NamedCurve } from "../enum";
-import { KeyPair } from "../entity";
+import { KeyType, NamedCurve } from "../../enum";
+import { KeyPair } from "../../entity";
 
 jest.mock("./generate-ec-keys", () => ({
   generateEcKeys: jest.fn().mockResolvedValue({

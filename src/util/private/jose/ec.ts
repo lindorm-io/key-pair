@@ -1,5 +1,5 @@
 import { Asn1SequenceEncoder } from "./Asn1SequenceEncoder";
-import { JoseDataEC, JoseData, EllipticalJWK } from "../../types";
+import { JoseDataEC, JoseData, EllipticalJWK } from "../../../types";
 import { createPrivateKey, createPublicKey } from "crypto";
 
 const getEncodeLength = (namedCurve: string): { len: number; offset: number; correction: number } => {

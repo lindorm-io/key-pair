@@ -1,5 +1,5 @@
 import { generateEcKeys } from "./generate-ec-keys";
-import { Algorithm, NamedCurve } from "../enum";
+import { Algorithm, NamedCurve } from "../../enum";
 
 describe("generateECCKeys", () => {
   test("should generate with default options", async () => {

@@ -1,5 +1,5 @@
-import { JoseData, JWK, EllipticalJWK, RivestJWK } from "../../types";
-import { KeyType } from "../../enum";
+import { JoseData, JWK, EllipticalJWK, RivestJWK } from "../../../types";
+import { KeyType } from "../../../enum";
 import { decodeEC } from "./ec";
 import { decodeRSA } from "./rsa";
 

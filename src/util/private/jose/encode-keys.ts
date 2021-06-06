@@ -1,5 +1,5 @@
-import { EncodeKeysOptions, KeyJWK } from "../../types";
-import { KeyType } from "../../enum";
+import { EncodeKeysOptions, KeyJWK } from "../../../types";
+import { KeyType } from "../../../enum";
 import { encodeEC } from "./ec";
 import { encodeRSA } from "./rsa";
 

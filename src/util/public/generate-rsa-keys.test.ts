@@ -1,5 +1,5 @@
 import { generateRsaKeys } from "./generate-rsa-keys";
-import { Algorithm } from "../enum";
+import { Algorithm } from "../../enum";
 
 describe("generateRSAKeys", () => {
   test("should generate with default options", async () => {

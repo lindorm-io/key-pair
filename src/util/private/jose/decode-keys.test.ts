@@ -1,4 +1,4 @@
-import { JWK } from "../../types";
+import { JWK } from "../../../types";
 import { decodeKeys } from "./decode-keys";
 
 describe("decodeKeys", () => {
