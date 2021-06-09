@@ -76,7 +76,7 @@ export const privateKeyExpires = new KeyPair({
 export const privateKeyNotAllowed = new KeyPair({
   id: "privateKeyNotAllowed",
   algorithms: [Algorithm.ES512],
-  allowed: false,
+  allowed: new Date("2099-01-01T01:00:00.000Z"),
   created: new Date("2020-01-07T01:00:00.000Z"),
   namedCurve: NamedCurve.P521,
   privateKey: "privateKeyNotAllowed-private-key",
@@ -143,7 +143,7 @@ export const publicKeyExpires = new KeyPair({
 export const publicKeyNotAllowed = new KeyPair({
   id: "publicKeyNotAllowed",
   algorithms: [Algorithm.ES512],
-  allowed: false,
+  allowed: new Date("2099-01-01T01:00:00.000Z"),
   created: new Date("2020-01-13T01:00:00.000Z"),
   namedCurve: NamedCurve.P521,
   publicKey: "publicKeyNotAllowed-public-key",

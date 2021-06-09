@@ -32,7 +32,8 @@ describe("KeyPair.ts", () => {
     keyPair = new KeyPair({
       id: "259ff47d-e334-4784-a478-04bf6d6b5d84",
       algorithms: [Algorithm.ES512, Algorithm.ES384, Algorithm.ES256],
-      allowed: true,
+      created: new Date("2019-01-01T08:00:00.000Z"),
+      allowed: new Date("2019-01-01T08:00:00.000Z"),
       expires: new Date("2020-01-01T08:00:00.000Z"),
       namedCurve: NamedCurve.P521,
       privateKey: "privateKey",
@@ -57,10 +58,10 @@ describe("KeyPair.ts", () => {
   });
 
   test("should get/set allowed", () => {
-    expect(keyPair.allowed).toBe(true);
+    expect(keyPair.allowed).toStrictEqual(new Date("2019-01-01T08:00:00.000Z"));
 
-    const allowed = false;
-    keyPair.allowed = false;
+    const allowed = new Date("2019-03-01T08:00:00.000Z");
+    keyPair.allowed = allowed;
 
     expect(keyPair.allowed).toBe(allowed);
     expect(keyPair.events).toMatchSnapshot();
@@ -118,7 +119,7 @@ describe("KeyPair.ts", () => {
       KeyPair.fromJWK({
         alg: "ES512",
         crv: "P-521",
-        key_ops: [],
+        keyOps: [],
         kid: "391a4598-5dc6-4e3c-b1d9-a971ac55b3bb",
         kty: "EC",
         use: "sig",

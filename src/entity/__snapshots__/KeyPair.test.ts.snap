@@ -11,8 +11,8 @@ Array [
         "ES384",
         "ES256",
       ],
-      "allowed": true,
-      "created": 2020-01-01T08:00:00.000Z,
+      "allowed": 2019-01-01T08:00:00.000Z,
+      "created": 2019-01-01T08:00:00.000Z,
       "expires": 2020-01-01T08:00:00.000Z,
       "external": false,
       "id": "259ff47d-e334-4784-a478-04bf6d6b5d84",
@@ -34,7 +34,7 @@ Object {
   "algorithms": Array [
     "ES512",
   ],
-  "allowed": true,
+  "allowed": 2020-01-01T08:00:00.000Z,
   "created": 2020-01-01T08:00:00.000Z,
   "events": Array [],
   "expires": null,
@@ -58,8 +58,8 @@ Object {
     "ES384",
     "ES256",
   ],
-  "allowed": true,
-  "created": 2020-01-01T08:00:00.000Z,
+  "allowed": 2019-01-01T08:00:00.000Z,
+  "created": 2019-01-01T08:00:00.000Z,
   "events": Array [],
   "expires": 2020-01-01T08:00:00.000Z,
   "external": false,
@@ -81,7 +81,7 @@ Array [
     "date": 2020-01-01T08:00:00.000Z,
     "name": "key_pair_allowed_changed",
     "payload": Object {
-      "allowed": false,
+      "allowed": 2019-03-01T08:00:00.000Z,
     },
   },
 ]
@@ -118,8 +118,8 @@ Object {
     "ES384",
     "ES256",
   ],
-  "allowed": true,
-  "created": 2020-01-01T08:00:00.000Z,
+  "allowed": 2019-01-01T08:00:00.000Z,
+  "created": 2019-01-01T08:00:00.000Z,
   "events": Array [],
   "expires": 2020-01-01T08:00:00.000Z,
   "external": false,
@@ -141,7 +141,7 @@ Object {
     "RS256",
     "RS384",
   ],
-  "allowed": true,
+  "allowed": 2020-01-01T08:00:00.000Z,
   "created": 2020-01-01T08:00:00.000Z,
   "events": Array [],
   "expires": null,
@@ -161,14 +161,15 @@ Object {
 exports[`KeyPair.ts toJWK should convert private RSA key with passphrase to JWK 1`] = `
 Object {
   "alg": "RS512",
-  "created": 1578099600000,
+  "allowedFrom": 1578099600000,
+  "createdAt": 1578099600000,
   "crv": "crv",
   "d": "d",
   "dp": "dp",
   "dq": "dq",
   "e": "e",
-  "expires": undefined,
-  "key_ops": Array [
+  "expiresAt": undefined,
+  "keyOps": Array [
     "decrypt",
     "sign",
     "verify",
@@ -188,14 +189,15 @@ Object {
 exports[`KeyPair.ts toJWK should convert private key to JWK 1`] = `
 Object {
   "alg": "ES512",
-  "created": 1577926800000,
+  "allowedFrom": 1577926800000,
+  "createdAt": 1577926800000,
   "crv": "crv",
   "d": "d",
   "dp": "dp",
   "dq": "dq",
   "e": "e",
-  "expires": undefined,
-  "key_ops": Array [
+  "expiresAt": undefined,
+  "keyOps": Array [
     "sign",
     "verify",
   ],

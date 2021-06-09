@@ -1,5 +1,6 @@
 import { JWK } from "../types";
 import { KeyPair } from "../entity";
+import { KeystoreError } from "../error";
 import { filter, find, orderBy, uniqBy } from "lodash";
 import { isKeyExpired, isKeyPrivate, isKeyUsable } from "../util";
 
@@ -19,7 +20,9 @@ export class Keystore {
     const keys = options.keys;
 
     if (!keys.length) {
-      throw new Error("Keystore was initialised without keys");
+      throw new KeystoreError("Keystore was initialised without keys", {
+        debug: { keys },
+      });
     }
 
     this.keys = orderBy(keys, ["created", "expires"], ["desc", "asc"]);
@@ -40,7 +43,9 @@ export class Keystore {
     const key = find(this.getKeys(), { id });
 
     if (!key) {
-      throw new Error(`Key by id [ ${id} ] could not be found`);
+      throw new KeystoreError("Key could not be found", {
+        data: { id },
+      });
     }
 
     return key;
@@ -58,7 +63,9 @@ export class Keystore {
     const keys = this.getPrivateKeys();
 
     if (!keys.length) {
-      throw new Error("Keys could not be found");
+      throw new KeystoreError("Private Keys could not be found", {
+        debug: { keys: this.keys },
+      });
     }
 
     return keys[0];

@@ -1,7 +1,8 @@
 import Joi from "joi";
 import { Algorithm, KeyPairEvent, KeyType, NamedCurve } from "../enum";
-import { JoseData, JWK, KeyJWK } from "../types";
 import { JOI_KEY_ALGORITHM, JOI_KEY_ALGORITHMS, JOI_KEY_NAMED_CURVE, JOI_KEY_TYPE } from "../constant";
+import { JoseData, JWK, KeyJWK } from "../types";
+import { KeyPairError } from "../error";
 import { decodeKeys, encodeKeys } from "../util";
 import { includes, isString, orderBy } from "lodash";
 import {
@@ -15,7 +16,7 @@ import {
 
 export interface KeyPairAttributes extends EntityAttributes {
   algorithms: Array<Algorithm>;
-  allowed: boolean;
+  allowed: Date;
   expires: Date | null;
   external: boolean;
   namedCurve: NamedCurve | null;
@@ -28,7 +29,7 @@ export interface KeyPairAttributes extends EntityAttributes {
 
 export interface KeyPairOptions extends EntityOptions {
   algorithms: Array<Algorithm>;
-  allowed?: boolean;
+  allowed?: Date;
   expires?: Date | null;
   external?: boolean;
   namedCurve?: NamedCurve | null;
@@ -43,7 +44,7 @@ const schema = Joi.object({
   ...JOI_ENTITY_BASE,
 
   algorithms: JOI_KEY_ALGORITHMS.required(),
-  allowed: Joi.boolean().required(),
+  allowed: Joi.date().required(),
   expires: Joi.date().allow(null).required(),
   external: Joi.boolean().required(),
   namedCurve: JOI_KEY_NAMED_CURVE.allow(null).required(),
@@ -62,14 +63,14 @@ export class KeyPair extends EntityBase<KeyPairAttributes> implements IEntity<Ke
   public readonly privateKey: string | null;
   public readonly publicKey: string;
   public readonly type: KeyType;
-  private _allowed: boolean;
+  private _allowed: Date;
   private _expires: Date | null;
   private _preferredAlgorithm: Algorithm;
 
   public constructor(options: KeyPairOptions) {
     super(options);
 
-    this._allowed = options.allowed !== false;
+    this._allowed = options.allowed || this.created;
     this._expires = options.expires || null;
     this._preferredAlgorithm =
       options.preferredAlgorithm || orderBy(options.algorithms, [(item): Algorithm => item], ["desc"])[0];
@@ -83,10 +84,10 @@ export class KeyPair extends EntityBase<KeyPairAttributes> implements IEntity<Ke
     this.type = options.type;
   }
 
-  public get allowed(): boolean {
+  public get allowed(): Date {
     return this._allowed;
   }
-  public set allowed(allowed: boolean) {
+  public set allowed(allowed: Date) {
     this._allowed = allowed;
     this.addEvent(KeyPairEvent.ALLOWED_CHANGED, { allowed: this._allowed });
   }
@@ -104,7 +105,12 @@ export class KeyPair extends EntityBase<KeyPairAttributes> implements IEntity<Ke
   }
   public set preferredAlgorithm(preferredAlgorithm: Algorithm) {
     if (!includes(this.algorithms, preferredAlgorithm)) {
-      throw new Error("Invalid preferredAlgorithm");
+      throw new KeyPairError("Invalid preferredAlgorithm", {
+        data: { preferredAlgorithm },
+        debug: {
+          algorithms: this.algorithms,
+        },
+      });
     }
 
     this._preferredAlgorithm = preferredAlgorithm;
@@ -170,10 +176,11 @@ export class KeyPair extends EntityBase<KeyPairAttributes> implements IEntity<Ke
 
     return {
       alg: this.preferredAlgorithm,
-      created: this.created.getTime(),
+      allowedFrom: this.allowed.getTime(),
+      createdAt: this.created.getTime(),
       crv: this.namedCurve ? this.namedCurve : undefined,
-      expires: this.expires ? this.expires.getTime() : undefined,
-      key_ops: keyOps.sort(),
+      expiresAt: this.expires ? this.expires.getTime() : undefined,
+      keyOps: keyOps.sort(),
       kid: this.id,
       kty: this.type,
       use: "sig",
@@ -187,8 +194,9 @@ export class KeyPair extends EntityBase<KeyPairAttributes> implements IEntity<Ke
     return new KeyPair({
       id: jwk.kid,
       algorithms: [jwk.alg as Algorithm],
-      created: jwk.created ? new Date(jwk.created) : undefined,
-      expires: jwk.expires ? new Date(jwk.expires) : undefined,
+      allowed: jwk.allowedFrom ? new Date(jwk.allowedFrom) : undefined,
+      created: jwk.createdAt ? new Date(jwk.createdAt) : undefined,
+      expires: jwk.expiresAt ? new Date(jwk.expiresAt) : undefined,
       external: true,
       namedCurve: jwk.crv ? (jwk.crv as NamedCurve) : undefined,
       preferredAlgorithm: jwk.alg as Algorithm,

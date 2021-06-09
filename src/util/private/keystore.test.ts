@@ -1,5 +1,5 @@
 import MockDate from "mockdate";
-import { isKeyExpired, isKeyPrivate, isKeyUsable } from "./keystore";
+import { isKeyAllowed, isKeyExpired, isKeyPrivate, isKeyUsable } from "./keystore";
 import {
   privateKey,
   privateKeyExternal,
@@ -18,6 +18,24 @@ import {
 MockDate.set("2021-01-01T08:00:00.000Z");
 
 describe("keystore", () => {
+  describe("isKeyAllowed", () => {
+    it("should resolve if key is expired", () => {
+      expect(isKeyAllowed(privateKey)).toBe(true);
+      expect(isKeyAllowed(privateKeyExternal)).toBe(true);
+      expect(isKeyAllowed(privateKeyRSA)).toBe(true);
+      expect(isKeyAllowed(privateKeyExpired)).toBe(true);
+      expect(isKeyAllowed(privateKeyExpires)).toBe(true);
+      expect(isKeyAllowed(privateKeyNotAllowed)).toBe(false);
+
+      expect(isKeyAllowed(publicKey)).toBe(true);
+      expect(isKeyAllowed(publicKeyExternal)).toBe(true);
+      expect(isKeyAllowed(publicKeyRSA)).toBe(true);
+      expect(isKeyAllowed(publicKeyExpired)).toBe(true);
+      expect(isKeyAllowed(publicKeyExpires)).toBe(true);
+      expect(isKeyAllowed(publicKeyNotAllowed)).toBe(false);
+    });
+  });
+
   describe("isKeyExpired", () => {
     it("should resolve if key is expired", () => {
       expect(isKeyExpired(privateKey)).toBe(false);

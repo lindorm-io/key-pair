@@ -2,10 +2,11 @@ import { KeyType, NamedCurve } from "../enum";
 
 export interface DefaultJWK {
   alg: string;
-  created?: number;
+  allowedFrom?: number;
+  createdAt?: number;
   crv?: string;
-  expires?: number;
-  key_ops: Array<string>;
+  expiresAt?: number;
+  keyOps: Array<string>;
   kid: string;
   kty: string;
   use: string;

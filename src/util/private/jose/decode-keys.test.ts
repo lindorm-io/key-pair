@@ -10,7 +10,7 @@ describe("decodeKeys", () => {
     const jwk: JWK = {
       alg: "ES512",
       crv: "P-521",
-      key_ops: [],
+      keyOps: [],
       kid: "391a4598-5dc6-4e3c-b1d9-a971ac55b3bb",
       kty: "EC",
       use: "sig",
@@ -55,7 +55,7 @@ describe("decodeKeys", () => {
 
     const jwk: JWK = {
       alg: "RS512",
-      key_ops: [],
+      keyOps: [],
       kid: "e2ed020f-b646-45c6-b425-feb32908daa0",
       kty: "RSA",
       use: "sig",
