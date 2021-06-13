@@ -7,11 +7,10 @@ import { decodeKeys, encodeKeys } from "../util";
 import { includes, isString, orderBy } from "lodash";
 import {
   EntityAttributes,
-  EntityBase,
   EntityCreationError,
   EntityOptions,
-  IEntity,
   JOI_ENTITY_BASE,
+  LindormEntity,
 } from "@lindorm-io/entity";
 
 export interface KeyPairAttributes extends EntityAttributes {
@@ -55,7 +54,7 @@ const schema = Joi.object({
   type: JOI_KEY_TYPE.required(),
 });
 
-export class KeyPair extends EntityBase<KeyPairAttributes> implements IEntity<KeyPairAttributes> {
+export class KeyPair extends LindormEntity<KeyPairAttributes> {
   public readonly algorithms: Array<Algorithm>;
   public readonly external: boolean;
   public readonly namedCurve: NamedCurve | null;

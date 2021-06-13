@@ -41,7 +41,7 @@
     "validate": "npm run test:clear && npm run check:lint && npm run check:types && npm test"
   },
   "dependencies": {
-    "@lindorm-io/entity": "^0.1.5",
+    "@lindorm-io/entity": "^0.2.0",
     "@lindorm-io/errors": "^0.1.5",
     "date-fns": "^2.22.1",
     "joi": "^17.4.0",
