@@ -3,6 +3,7 @@ import { Algorithm, KeyPairEvent, KeyType, NamedCurve } from "../enum";
 import { JOI_KEY_ALGORITHM, JOI_KEY_ALGORITHMS, JOI_KEY_NAMED_CURVE, JOI_KEY_TYPE } from "../constant";
 import { JoseData, JWK, KeyJWK } from "../types";
 import { KeyPairError } from "../error";
+import { camelKeys, snakeKeys } from "@lindorm-io/core";
 import { decodeKeys, encodeKeys } from "../util";
 import { includes, isString, orderBy } from "lodash";
 import {
@@ -173,7 +174,7 @@ export class KeyPair extends LindormEntity<KeyPairAttributes> {
       keyOps.push("decrypt");
     }
 
-    return {
+    return snakeKeys({
       alg: this.preferredAlgorithm,
       allowedFrom: this.allowed.getTime(),
       createdAt: this.created.getTime(),
@@ -184,22 +185,23 @@ export class KeyPair extends LindormEntity<KeyPairAttributes> {
       kty: this.type,
       use: "sig",
       ...data,
-    };
+    });
   }
 
   public static fromJWK(jwk: JWK): KeyPair {
     const data: JoseData = decodeKeys(jwk);
+    const camel = camelKeys(jwk);
 
     return new KeyPair({
-      id: jwk.kid,
-      algorithms: [jwk.alg as Algorithm],
-      allowed: jwk.allowedFrom ? new Date(jwk.allowedFrom) : undefined,
-      created: jwk.createdAt ? new Date(jwk.createdAt) : undefined,
-      expires: jwk.expiresAt ? new Date(jwk.expiresAt) : undefined,
+      id: camel.kid,
+      algorithms: [camel.alg as Algorithm],
+      allowed: camel.allowedFrom ? new Date(camel.allowedFrom) : undefined,
+      created: camel.createdAt ? new Date(camel.createdAt) : undefined,
+      expires: camel.expiresAt ? new Date(camel.expiresAt) : undefined,
       external: true,
-      namedCurve: jwk.crv ? (jwk.crv as NamedCurve) : undefined,
-      preferredAlgorithm: jwk.alg as Algorithm,
-      type: jwk.kty as KeyType,
+      namedCurve: camel.crv ? (camel.crv as NamedCurve) : undefined,
+      preferredAlgorithm: camel.alg as Algorithm,
+      type: camel.kty as KeyType,
       ...data,
     });
   }
